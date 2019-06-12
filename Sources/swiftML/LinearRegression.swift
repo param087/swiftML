@@ -2,7 +2,7 @@ import TensorFlow
 
 /// A linear regression model
 ///
-/// Linear regression with support for gradient descent and least square method.
+/// Linear regression with support for gradient descent and singular vector decomposition( svd).
 public class LinearRegression {
 
     public var iterations: Int
@@ -13,7 +13,8 @@ public class LinearRegression {
     /// Creates a linear regression model.
     ///
     /// - Parameters
-    ///   - gradientDescent: The gradient descent or least square method to be used for learning,
+    ///   - gradientDescent: The gradient descent or singular vector decomposition method to be
+    ///     used for learning,
     ///     default to 'false'.   
     ///   - iterations: The number of iterations for gradient descent, default to 1000.
     ///   - learningRate: The learning rate for gardient descent, default to 0.001
