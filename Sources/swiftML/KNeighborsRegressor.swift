@@ -6,11 +6,11 @@ import TensorFlow
 /// neighbors in the training set.
 public class KNeighborsRegressor {
 
-    var neighbors: Int
-    var p: Int
-    var weights: String
-    var X: Tensor<Float>
-    var y: Tensor<Float>
+    public var neighbors: Int
+    public var p: Int
+    public var weights: String
+    public var X: Tensor<Float>
+    public var y: Tensor<Float>
   
     /// Create a K neighbors regressor model.
     ///
