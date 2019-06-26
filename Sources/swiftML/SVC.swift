@@ -212,7 +212,7 @@ public class SVC {
     
         let a = alphas.reshaped(to: [1, x.shape[0]])*y.reshaped(to: [1, x.shape[0]])
         return matmul(x.transposed(), 
-                      a.reshaped(to: [8, 1])).reshaped(to: [1,  x.shape[1]])
+                      a.reshaped(to: [x.shape[0], 1])).reshaped(to: [1,  x.shape[1]])
     }
   
     //computes bias
