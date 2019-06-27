@@ -1,22 +1,28 @@
-import TensorFlow
-
 
 public class DecisionTree {
   
     public var originalDataSet : DataSet
+    public var type : String
     public var root : Node? 
   
     //init creates original DataSet to be stored and calls id3 to create tree
-    public init (data : [[String]], target: Int) {
+    public init (data : [[String]], target: Int, type : String) {
         self.originalDataSet = DataSet(name: "Original", 
                                        data: data, 
                                        target: target)
-        self.root = id3(d: self.originalDataSet)
+        self.type = type
+      
+        if type == "C" {
+           self.root = id3C(d: self.originalDataSet)
+        } else {
+           self.root = id3R(d: self.originalDataSet)
+
+        }
     }
   
   
-    //id3 recursive method to traverse the dataset to create Decision Tree
-    public func id3(d : DataSet) -> Node{
+    //id3 recursive method to examine the dataset to create classification Tree
+    public func id3C(d : DataSet) -> Node{
     
         let h = d.homogenous()
     
@@ -51,7 +57,50 @@ public class DecisionTree {
                                      data : d.data, 
                                      target : d.target)   
             
-            let id_node : Node = id3(d: data)
+            let id_node : Node = id3C(d: data)
+      
+            node.addChild(label: value.name, node: id_node)
+      
+        }    
+   
+    
+        return node
+    
+    
+      }
+  
+    //id3 recursive method to traverse the dataset to create Decision Tree
+    public func id3R(d : DataSet) -> Node{
+
+        //if all the classification are the same, creates leaf
+        //if no non-target attributes are left, creates leaf with dominant class
+
+        let tolerance : Float = 10.0
+      
+        if d.getCoeffDev() < tolerance || d.data[0].count == 1 || d.data.count < 4 {
+            let node = Node(c: String(d.getTargetMean()), leaf: true)
+            print(node.classification)
+            return node
+        }
+
+        //gets best feature to split on and creates a node
+        let f = d.getSplitFeature()
+    
+        print(f.name)
+        let node = Node(c : f.name, leaf : false)
+    
+        //calls id3 on all subset DataSets for all values of the best feature
+        for value in f.values {
+          
+            print(value.name)
+
+            let data = createDataSet(feature : f, 
+                                     featureValue : value, 
+                                     data : d.data, 
+                                     target : d.target)   
+            
+            let id_node : Node = id3R(d: data)
+          
       
             node.addChild(label: value.name, node: id_node)
       
@@ -143,11 +192,13 @@ public class DataSet{
     public var infoGains: Dictionary<Feature, Float>
     public var splitFeature: Feature
     public var target: Int
+    public var stdDev: Float
     
     public init(name: String, data: [[String]], target: Int){
         self.name = name
         self.data = data 
         self.entropy = 0.0
+        self.stdDev = 0.0
         self.target = target
         self.infoGains = Dictionary<Feature, Float>()
         if target != 0 {
@@ -170,6 +221,52 @@ public class DataSet{
         }
       
        return (true, classification)
+    }
+  
+    public func getCoeffDev() -> Float {
+      return (getTargetStdDev()/getTargetMean())*100
+    }
+  
+    public func getTargetStdDev() -> Float{
+      
+        let t : Feature = Feature(data: self.data, column: self.target)
+      
+        var sd : Float = 0.0
+      
+        let total = self.data.count - 1
+      
+        let mean = getTargetMean()
+      
+        var s : Float = 0.0
+      
+        for value in t.values {
+            let number = (Float)(value.name)!-mean
+            s += (pow(number, 2))*(Float)(value.occurences)
+        }
+      
+        sd = Float((s/(Float)(total)).squareRoot())
+      
+        return sd
+      
+    }
+  
+    public func getTargetMean() -> Float{
+            
+        let t : Feature = Feature(data: self.data, column: self.target)
+      
+        var mean : Float = 0.0
+      
+        let total = self.data.count - 1
+            
+        var count : Float = 0.0
+      
+        for value in t.values {
+            count += (Float)(value.name)!*(Float)(value.occurences)
+        }
+      
+        mean = count/(Float)(total)
+      
+        return mean
     }
     
     //returns the entropy of the data set
@@ -195,8 +292,11 @@ public class DataSet{
     //methods returns the bestFeature i.e. max infoGain 
     public func getBestFeature() -> Feature {
       
-        var bestGain : Float = self.splitFeature.getInfoGain(data: self.data, 
-                                                             target: self.target)
+        
+      
+        var bestInfoGain : Float = self.splitFeature.getInfoGain(data: self.data, 
+                                                              target: self.target)
+        var bestGain : Float = self.entropy - bestInfoGain
       
         for i in stride(from: 0, through: self.data[0].count-1, by: 1){
         
@@ -211,6 +311,38 @@ public class DataSet{
           
                 if infoGain > bestGain {
                     bestGain = infoGain
+                    self.splitFeature = f
+                }
+
+            }
+        
+        }
+      
+        return self.splitFeature
+      
+    }
+  
+   
+    public func getSplitFeature() -> Feature {
+       
+                  
+        var bestSD : Float = self.splitFeature.getTargetStdDev(data: self.data, 
+                                                               target: self.target)
+        var bestSDR : Float = getTargetStdDev() - bestSD
+      
+        for i in stride(from: 0, through: self.data[0].count-1, by: 1){
+        
+            if i != self.target {
+          
+                let f : Feature = Feature(data: self.data, column: i)
+          
+                let sdt : Float = f.getTargetStdDev(data: self.data, 
+                                                 target: self.target)
+          
+                let sdr : Float = getTargetStdDev() - sdt
+          
+                if sdr > bestSDR {
+                    bestSDR = sdr
                     self.splitFeature = f
                 }
 
@@ -345,6 +477,37 @@ public class Feature : Hashable{
       return dominantV
       
     }
+  
+  
+    public func getTargetStdDev(data: [[String]], target : Int) -> Float{
+      
+        var i : [Float] = []
+      
+        let total = data.count-1
+      
+        for v in self.values {
+        
+            let d : DataSet = createDataSet(feature : self, 
+                                            featureValue : v, 
+                                            data : data, 
+                                            target : target)
+        
+            let sdt : Float = d.getTargetStdDev()
+        
+            let number : Float = (Float)(v.occurences)/(Float)(total)
+        
+            i.append(number*sdt)
+        
+        }
+      
+        var sd : Float = 0.0
+      
+        for info in i {
+            sd += info
+        }
+      
+        return sd
+    }
     
     
     public func getInfoGain(data: [[String]], target : Int) -> Float{
@@ -421,3 +584,4 @@ public class FeatureValue : Hashable{
     
     
   }
+
