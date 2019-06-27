@@ -81,7 +81,7 @@ public class SVC {
           
                 let Tx_i = Tensor<Float>(x_i)
                 let Tx_j = Tensor<Float>(x_j)
-          
+              
                 let Tk_ij = kernel(Tx_i, Tx_i) + kernel(Tx_j, Tx_j) * 2 *
                             kernel(Tx_i, Tx_j)
           
@@ -136,7 +136,7 @@ public class SVC {
           
                 self.b = computeB(x:self.X, y:self.Y, w: self.w)
           
-                if self.kernelType == "linear"{
+                if self.kernelType == "linear" || self.kernelType == "rbf"{
                     self.w = computeW(alphas: Tensor<Float>(alphas), 
                                       x:self.X, 
                                       y:self.Y)
@@ -154,11 +154,29 @@ public class SVC {
   }
   
  
-    //predicts class of example   
-    public func predict(example : [Float]) -> Int {
-   
+    //predicts class of an example   
+    public func predictE(example : [Float]) -> Int {
+         
         return computeH(X : example, w : self.w, b : self.b)
     
+    }
+  
+    /// Returns classified test tensor.
+    ///
+    /// - Parameter X: Test Tensor<Float> of shape [number of samples, number of features].
+    /// - Returns: classified class tensor.  
+    public func predict(X: Tensor<Float>) -> Tensor<Float> {
+
+        precondition(X.shape[0] > 0, "X must be non-empty.")
+
+        var predictions : [Float] = []
+        
+        for i in 0..<X.shape[0] {
+            let p = (Float)(predictE(example: X[i].scalars))
+            predictions.append(p)
+        }
+        
+        return Tensor<Float>(predictions)
     }
   
     //returns support vectors
@@ -209,8 +227,8 @@ public class SVC {
     public func computeW(alphas: Tensor<Float>, 
                          x: Tensor<Float>, 
                          y: Tensor<Float>) -> Tensor<Float>{
-    
-        let a = alphas.reshaped(to: [1, x.shape[0]])*y.reshaped(to: [1, x.shape[0]])
+
+        let a = alphas.reshaped(to: [1, x.shape[0]])*y.reshaped(to: [1, y.shape[0]])
         return matmul(x.transposed(), 
                       a.reshaped(to: [x.shape[0], 1])).reshaped(to: [1,  x.shape[1]])
     }
@@ -270,6 +288,44 @@ public class SVC {
     public func quadraticKernel(x1 : Tensor<Float>,
                                 x2 : Tensor<Float>) -> Tensor<Float>{
         return matmul(x1, x2.transposed()).squared()
+    }
+  
+    public func rbfGaussian(x1 : Tensor<Float>, 
+                        x2 : Tensor<Float>
+                        ) -> Tensor<Float>{
+    
+        let a = x1 - x2
+  
+        let n = a.shape[0]
+        let m = a.shape[1]
+
+        let b = (Float)(-1.0)*3*matmul(a.transposed(), a)
+         
+        return Raw.exp(b)
+    
+     }
+  
+    /// Returns Predict class labels for input samples.
+    ///
+    /// - Parameters
+    ///   - X: Sample tensor of shape [number of samples, number of features].
+    ///   - y: Target label tensor of shape [number of samples].
+    /// - Returns: Returns the mean accuracy on the given test data and labels.
+    public func score(X: Tensor<Float>, y: Tensor<Float>) -> Float {
+        
+        precondition(X.shape[0] == y.shape[0], "X and y must have same number of samples.")
+        precondition(X.shape[0] > 0, "X must be non-empty.")
+        precondition(y.shape[0] > 0, "y must be non-empty.")
+
+        let yPred = self.predict(X: X)
+        var count:Int = 0
+        for i in 0..<X.shape[0] {
+            if yPred[i] == y[i] {
+                count = count + 1
+            }
+        }
+        let score = Float(count) / Float(y.shape[0])
+        return score
     }
   
 }
