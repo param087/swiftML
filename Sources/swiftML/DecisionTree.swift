@@ -79,21 +79,17 @@ public class DecisionTree {
       
         if d.getCoeffDev() < tolerance || d.data[0].count == 1 || d.data.count < 4 {
             let node = Node(c: String(d.getTargetMean()), leaf: true)
-            print(node.classification)
             return node
         }
 
         //gets best feature to split on and creates a node
         let f = d.getSplitFeature()
     
-        print(f.name)
         let node = Node(c : f.name, leaf : false)
     
         //calls id3 on all subset DataSets for all values of the best feature
         for value in f.values {
           
-            print(value.name)
-
             let data = createDataSet(feature : f, 
                                      featureValue : value, 
                                      data : d.data, 
