@@ -114,7 +114,7 @@ public class PCA {
     /// - Parameter data: Input Tensor<Float> of shape[sampleCount, featureCount], where
     ///   sampleCount is the number of sample and featureCount is the number of features.
     /// - Returns: Original data whose transform would be data.
-    public func inverseTransform(data: Tensor<Float>) -> Tensor<Float> {
+    public func inverseTransformation(for data: Tensor<Float>) -> Tensor<Float> {
         
         if self.whiten {
             return matmul(data, sqrt(self.expainedVariance
