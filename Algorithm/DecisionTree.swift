@@ -1,8 +1,8 @@
 public class DecisionTree {
   
-    public var originalDataSet : DataSet
-    public var root : Node?
-    public var maxDepth : Int
+    public var originalDataSet: DataSet
+    public var root: Node?
+    public var maxDepth: Int
   
     //init creates original DataSet to be stored and creates tree
     public init (data: [[String]], target: Int, perform: String, using: String) {
@@ -304,9 +304,9 @@ public class DecisionTree {
 //class defining a branch between two nodes
 public class Branch {
   
-    public var label : String
-    public var from : Node
-    public var to : Node
+    public var label: String
+    public var from: Node
+    public var to: Node
 
   
     public init(label: String, from: Node, to: Node){
@@ -613,10 +613,10 @@ public func splitDataSet(data: [[String]], startIndex: Int) -> ([[String]], [[St
 //class defining a Feature and performing computations on it
 public class Feature : Hashable {
     
-    public var name : String
-    public var values : Set<FeatureValue>
-    public var entropy : Float
-    public var giniImpurity : Float
+    public var name: String
+    public var values: Set<FeatureValue>
+    public var entropy: Float
+    public var giniImpurity: Float
     
     public init(data : [[String]], column : Int){
         self.name = data[0][column]
@@ -777,7 +777,7 @@ public class Feature : Hashable {
   //class defining a Feature Value and performing computations on it
 public class FeatureValue : Hashable {
     
-    public var name : String
+    public var name: String
     public var occurences: Int
     
     
