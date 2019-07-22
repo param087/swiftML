@@ -1,13 +1,13 @@
 public class RandomForest{
     
-    public var forest : [RandomTree]
-    public var fullData : [[String]]
-    public var target : Int
-    public var nTrees : Int
-    public var nFeatures : Int
-    public var depth : Int
-    public var perform : String
-    public var using : String
+    public var forest: [RandomTree]
+    public var fullData: [[String]]
+    public var target: Int
+    public var nTrees: Int
+    public var nFeatures: Int
+    public var depth: Int
+    public var perform: String
+    public var using: String
     
     /*
      Init for Random Forest
