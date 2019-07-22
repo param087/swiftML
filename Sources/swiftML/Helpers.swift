@@ -19,10 +19,10 @@ public func matrixPseudoInverse(_ data: Tensor<Float>) -> Tensor<Float> {
 ///   - v: The tensor containing of right singular vectors for each matrix.
 /// - Returns: Sign correction to ensure deterministic output.
 public func svdFlip(
-    u: Tensor<Float>,
-    v: Tensor<Float>,
+    u: Tensor<Double>,
+    v: Tensor<Double>,
     uBasedDecision: Bool = true
-) -> (Tensor<Float>, Tensor<Float>) {
+) -> (Tensor<Double>, Tensor<Double>) {
   
     var U = u
     var V = v
@@ -30,7 +30,7 @@ public func svdFlip(
     if uBasedDecision {
     
         let maxAbsCols = abs(u).argmax(squeezingAxis: 0)
-        var colValueForSign = Tensor<Float>(zeros: [u.shape[1]])
+        var colValueForSign = Tensor<Double>(zeros: [u.shape[1]])
         
         for i in 0..<u.shape[1] {
             colValueForSign[i] = u[Int(maxAbsCols[i].scalarized()), i]
@@ -43,7 +43,7 @@ public func svdFlip(
     } else {
         
         let maxAbsRows = abs(v).argmax(squeezingAxis: 1)
-        var rowValueForSign = Tensor<Float>(zeros: [u.shape[0]])
+        var rowValueForSign = Tensor<Double>(zeros: [u.shape[0]])
         
         for i in 0..<u.shape[0] {
             rowValueForSign[i] = v[i, Int(maxAbsRows[i].scalarized())]
@@ -56,7 +56,6 @@ public func svdFlip(
     
     return (U, V)
 }
-
   
 /// Return the minkowski distance based on value of p.
 ///
