@@ -1,9 +1,9 @@
 public class RandomTree {
   
-    public var originalDataSet : DataSet
-    public var root : Node?
-    public var maxDepth : Int
-    public var randomVars : Int
+    public var originalDataSet: DataSet
+    public var root: Node?
+    public var maxDepth: Int
+    public var randomVars: Int
   
     /*init creates original DataSet to be stored and creates tree
      Parameters:
@@ -43,7 +43,7 @@ public class RandomTree {
     }
   
     //returns a set of randomIndices 
-    public func getRandomIndices(from : DataSet) -> [Int]{
+    public func getRandomIndices(from: DataSet) -> [Int]{
         var randomIndices = [Int]()
         
         for i in 1 ... min(self.randomVars, from.data[0].count-1) {
@@ -97,7 +97,7 @@ public class RandomTree {
     }
   
     //Method that prints a graphical representation of the decision tree
-    public func printTree(node: Node, depth : Int){
+    public func printTree(node: Node, depth: Int){
         var indent : String = ""
 
         for x in 0 ... depth {
@@ -117,21 +117,21 @@ public class RandomTree {
     } 
   
     //Method that grows a regression tree using Gini Index
-    public func giniR(d : DataSet, depth: Int) -> Node {
+    public func giniR(d: DataSet, depth: Int) -> Node {
         let currentGiniImpurity = d.getGiniImpurity()
         let f = d.getGiniFeature(fromIndices:getRandomIndices(from: d))
 
         if currentGiniImpurity != 0.0 && f.giniImpurity < currentGiniImpurity && depth < self.maxDepth {
         
-            let node = Node(c : f.name, leaf : false)
+            let node = Node(c: f.name, leaf: false)
               
             if (Float)(f.values.first!.name) == nil {
                 for value in f.values {
-                    let data = createDataSet(feature : f, 
-                                     featureValue : value, 
-                                     data : d.data, 
-                                     target : d.target)   
-                    let g_node : Node = giniC(d: data, depth : depth+1)
+                    let data = createDataSet(feature: f, 
+                                     featureValue: value, 
+                                     data: d.data, 
+                                     target: d.target)   
+                    let g_node : Node = giniC(d: data, depth: depth+1)
                     node.addChild(label: value.name, node: g_node)
                 }    
                 return node
@@ -162,7 +162,7 @@ public class RandomTree {
     }
    
     //Method that grows a classification tree using Gini Index
-    public func giniC(d : DataSet, depth: Int) -> Node {
+    public func giniC(d: DataSet, depth: Int) -> Node {
         let h = d.homogenous()
 
         if h.0 {
@@ -187,10 +187,10 @@ public class RandomTree {
               
             if (Float)(f.values.first!.name) == nil {
                 for value in f.values {
-                    let data = createDataSet(feature : f, 
-                                     featureValue : value, 
-                                     data : d.data, 
-                                     target : d.target)   
+                    let data = createDataSet(feature: f, 
+                                     featureValue: value, 
+                                     data: d.data, 
+                                     target: d.target)   
             
                     let gNode : Node = giniC(d: data, depth : depth+1)
                     node.addChild(label: value.name, node: gNode)
@@ -220,7 +220,7 @@ public class RandomTree {
             return node
           
          } else {
-            let f = Feature(data: d.data, column : d.target)
+            let f = Feature(data: d.data, column: d.target)
             let v = f.getDominantValue()
             let node = Node(c: v.name, leaf: true)
             return node
@@ -228,7 +228,7 @@ public class RandomTree {
       
     }
     //id3 recursive method to examine the dataset to create classification Tree
-    public func id3C(d : DataSet) -> Node{
+    public func id3C(d: DataSet) -> Node{
     
         let h = d.homogenous()
     
@@ -240,7 +240,7 @@ public class RandomTree {
     
         //if no non-target attributes are left, creates leaf with dominant class
         if d.data[0].count == 1 {
-            let f = Feature(data: d.data, column : 0)
+            let f = Feature(data: d.data, column: 0)
             let v = f.getDominantValue()
             let node = Node(c: v.name, leaf: true)
             return node
@@ -248,14 +248,14 @@ public class RandomTree {
     
         //gets best feature to split on and creates a node
         let f = d.getBestFeature(fromIndices:getRandomIndices(from: d))
-        let node = Node(c : f.name, leaf : false)
+        let node = Node(c: f.name, leaf: false)
     
         //calls id3 on all subset DataSets for all values of the best feature
         for value in f.values {
-            let data = createDataSet(feature : f, 
-                                     featureValue : value, 
-                                     data : d.data, 
-                                     target : d.target)   
+            let data = createDataSet(feature: f, 
+                                     featureValue: value, 
+                                     data: d.data, 
+                                     target: d.target)   
             
             let id_node : Node = id3C(d: data)
             node.addChild(label: value.name, node: id_node)
@@ -265,7 +265,7 @@ public class RandomTree {
     }
   
     //id3 recursive method to traverse the dataset to create Decision Tree
-    public func id3R(d : DataSet) -> Node{
+    public func id3R(d: DataSet) -> Node{
 
         //if all the classification are the same, creates leaf
         //if no non-target attributes are left, creates leaf with dominant class
@@ -277,14 +277,14 @@ public class RandomTree {
 
         //gets best feature to split on and creates a node
         let f = d.getSplitFeature(fromIndices:getRandomIndices(from: d))
-        let node = Node(c : f.name, leaf : false)
+        let node = Node(c: f.name, leaf: false)
     
         //calls id3 on all subset DataSets for all values of the best feature
         for value in f.values {
-            let data = createDataSet(feature : f, 
-                                     featureValue : value, 
-                                     data : d.data, 
-                                     target : d.target)   
+            let data = createDataSet(feature: f, 
+                                     featureValue: value, 
+                                     data: d.data, 
+                                     target: d.target)   
             let id_node : Node = id3R(d: data)
             node.addChild(label: value.name, node: id_node)
         }    
@@ -294,7 +294,7 @@ public class RandomTree {
   
     //method that classifies a example fed into the tree
     public func classify(example: [[String]]) -> String {
-        var currentNode : Node = self.root!
+        var currentNode: Node = self.root!
 
         //loop continues till leaf is found
         while !currentNode.isLeaf {
@@ -336,9 +336,9 @@ public class RandomTree {
 //class defining a branch between two nodes
 public class Branch {
   
-    public var label : String
-    public var from : Node
-    public var to : Node
+    public var label: String
+    public var from: Node
+    public var to: Node
 
   
     public init(label: String, from: Node, to: Node){
@@ -355,10 +355,10 @@ public class Node {
     public var classification: String
     public var isLeaf: Bool
     public weak var parent: Node?
-    public var cutoff : Float?
+    public var cutoff: Float?
     public var branches = [Branch]()
 
-    public init(c: String, leaf : Bool) {
+    public init(c: String, leaf: Bool) {
         self.classification = c
         self.isLeaf = leaf
     }
@@ -613,10 +613,10 @@ public func getColumnNumber(colName: String, data: [[String]]) -> Int{
 }
     
 //creates a subset DataSet where all examples have a specific feature value
-public func createDataSet(feature : Feature, 
-                          featureValue : FeatureValue, 
-                          data : [[String]], 
-                          target : Int) -> DataSet{
+public func createDataSet(feature: Feature, 
+                          featureValue: FeatureValue, 
+                          data: [[String]], 
+                          target: Int) -> DataSet{
     
     let c = getColumnNumber(colName : feature.name, data: data)
       
@@ -664,10 +664,10 @@ public func splitDataSet(data: [[String]], startIndex: Int) -> ([[String]], [[St
 //class defining a Feature and performing computations on it
 public class Feature : Hashable {
     
-    public var name : String
-    public var values : Set<FeatureValue>
-    public var entropy : Float
-    public var giniImpurity : Float
+    public var name: String
+    public var values: Set<FeatureValue>
+    public var entropy: Float
+    public var giniImpurity: Float
     
     /*
      Init of Feature Class
@@ -675,7 +675,7 @@ public class Feature : Hashable {
             data -> data with labels
             column -> column number of label
     */
-    public init(data : [[String]], column : Int){
+    public init(data: [[String]], column: Int){
         self.name = data[0][column]
         self.values = Set<FeatureValue>()
         self.entropy = 0.0
@@ -712,7 +712,7 @@ public class Feature : Hashable {
     }
   
     //returns stdDev of the label column
-    public func getTargetStdDev(data: [[String]], target : Int) -> Float{
+    public func getTargetStdDev(data: [[String]], target: Int) -> Float{
         var i : [Float] = []
         let total = data.count-1
         
@@ -721,8 +721,8 @@ public class Feature : Hashable {
                                             featureValue : v, 
                                             data : data, 
                                             target : target)
-            let sdt : Float = d.getTargetStdDev()
-            let number : Float = (Float)(v.occurences)/(Float)(total)
+            let sdt: Float = d.getTargetStdDev()
+            let number: Float = (Float)(v.occurences)/(Float)(total)
             i.append(number*sdt)
         }
         
@@ -734,20 +734,20 @@ public class Feature : Hashable {
     }
     
     //returns infoGain for the feature
-    public func getInfoGain(data: [[String]], target : Int) -> Float{
-        var i : [Float] = []
+    public func getInfoGain(data: [[String]], target: Int) -> Float{
+        var i: [Float] = []
         let total = data.count-1
       
         for v in self.values {
         
-            let d : DataSet = createDataSet(feature : self, 
-                                            featureValue : v, 
-                                            data : data, 
-                                            target : target)
+            let d: DataSet = createDataSet(feature: self, 
+                                            featureValue: v, 
+                                            data: data, 
+                                            target: target)
         
-            let e : Float = d.entropy
+            let e: Float = d.entropy
         
-            let number : Float = (Float)(v.occurences)/(Float)(total)
+            let number: Float = (Float)(v.occurences)/(Float)(total)
         
             i.append(number*e)
         
@@ -762,7 +762,7 @@ public class Feature : Hashable {
     } 
   
     //returns categorical gini impurity for the feature
-    public func giniImpurityCategorical(data: [[String]], target : Int) -> Float {
+    public func giniImpurityCategorical(data: [[String]], target: Int) -> Float {
        var giniImp : Float = 0.0
        let total = data.count-1
         
@@ -781,7 +781,7 @@ public class Feature : Hashable {
     }
                                          
       
-    public func giniImpurityNumerical(data: [[String]], target : Int) -> (Float, DataSet, DataSet, Float) {
+    public func giniImpurityNumerical(data: [[String]], target: Int) -> (Float, DataSet, DataSet, Float) {
       
         let title = data[0]
         var mod = Array(data[1...data.count-1])
@@ -802,8 +802,8 @@ public class Feature : Hashable {
         for i in stride(from: 2, through: data.count-1, by: 1){
             split = splitDataSet(data: mod, startIndex: i)
          
-            let d1 : DataSet = DataSet(name: "one", data: split.0, target: target)
-            let d2 : DataSet = DataSet(name: "two", data: split.1, target: target)
+            let d1: DataSet = DataSet(name: "one", data: split.0, target: target)
+            let d2: DataSet = DataSet(name: "two", data: split.1, target: target)
             let impurity = max(d1.getGiniImpurity(), d2.getGiniImpurity())
 
             if impurity < giniI {
@@ -834,7 +834,7 @@ public class Feature : Hashable {
 //class defining a Feature Value and performing computations on it
 public class FeatureValue : Hashable {
     
-    public var name : String
+    public var name: String
     public var occurences: Int
     
     
@@ -843,7 +843,7 @@ public class FeatureValue : Hashable {
         self.occurences = occurences
     }
   
-    public static func == (lhs : FeatureValue, rhs : FeatureValue) -> Bool{
+    public static func == (lhs: FeatureValue, rhs: FeatureValue) -> Bool{
         if lhs.name != rhs.name {
             return false
         }
