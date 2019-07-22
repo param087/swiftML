@@ -1,12 +1,12 @@
 public class GradientBoost {
     
-    public var data : [[String]]
-    public var target : Int
-    public var residualData : [[String]]
-    public var root : Float
-    public var trees : [DecisionTree]
-    public var limit : Int
-    public var learningRate : Float
+    public var data: [[String]]
+    public var target: Int
+    public var residualData: [[String]]
+    public var root: Float
+    public var trees: [DecisionTree]
+    public var limit: Int
+    public var learningRate: Float
     
     
     /*
