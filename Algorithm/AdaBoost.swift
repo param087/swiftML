@@ -1,12 +1,12 @@
 public class AdaBoost {
-    public var stumps:[DecisionTree]
-    public var weights:[Float]
-    public var alphas:[Float]
-    public var errors:[Float]
-    public var iterations:Int
-    public var data:[[String]]
-    public var K:Float
-    public var target:Int
+    public var stumps: [DecisionTree]
+    public var weights: [Float]
+    public var alphas: [Float]
+    public var errors: [Float]
+    public var iterations: Int
+    public var data: [[String]]
+    public var K: Float
+    public var target: Int
     
     /*
      initializer for AdaBoost Classifier
