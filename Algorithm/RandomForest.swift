@@ -18,7 +18,7 @@ public class RandomForest{
         using -> giniIndex or infoGain
         nTrees -> number of Trees
     */
-    public init (data: [[String]], target : Int, perform : String, using: String, nTrees: Int, nFeatures: Int, depth: Int) {
+    public init (data: [[String]], target: Int, perform: String, using: String, nTrees: Int, nFeatures: Int, depth: Int) {
         self.fullData = data
         self.target = target
         self.nTrees = nTrees
@@ -78,7 +78,7 @@ public class RandomForest{
             return (String)(prediction/(Float)(self.forest.count))
             
         } else {
-            let target = Feature(data : self.fullData, column : self.target)
+            let target = Feature(data: self.fullData, column: self.target)
             var classes = Dictionary<String, Int>()
             
             for value in target.values {
