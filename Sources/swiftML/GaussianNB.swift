@@ -22,8 +22,8 @@ public class GaussianNB {
     /// Fit Gaussian naive bayes classifier model.
     ///
     /// - Parameters
-    ///   - data: Training data Tensor<Float> of shape [number of samples, number of features].
-    ///   - labels: Target value Tensor<Float> of shape [number of samples].
+    ///   - data: Training data tensor of shape [number of samples, number of features].
+    ///   - labels: Target value tensor of shape [number of samples].
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
       
         precondition(data.shape[0] == labels.shape[0], 
@@ -106,7 +106,7 @@ public class GaussianNB {
   
     /// Returns classified test tensor.
     ///
-    /// - Parameter data: Test Tensor<Float> of shape [number of samples, number of features].
+    /// - Parameter data: Test tensor of shape [number of samples, number of features].
     /// - Returns: classified tensor.
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
 

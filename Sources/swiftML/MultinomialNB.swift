@@ -17,7 +17,7 @@ public class MultinomialNB {
   
     /// Create a multinomial naive model.
     ///
-    /// - Parameter alpha: Additive smoothing parameter, default to 1.0.
+    /// - Parameter alpha: Additive smoothing parameter, default to `1.0`.
     public init(
         alpha:Float = 1.0
     ) {
@@ -31,15 +31,15 @@ public class MultinomialNB {
     /// Fit multinomial naive bayes classifier model.
     ///
     /// - Parameters
-    ///   - data: Training data Tensor<Float> of shape [number of samples, number of features].
-    ///   - labels: Target value Tensor<Float> of shape [number of samples].
+    ///   - data: Training data tensor of shape [number of samples, number of features].
+    ///   - labels: Target value tensor of shape [number of samples].
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
       
         precondition(data.shape[0] == labels.shape[0],
             "Data and labels must have same number of samples.")
         precondition(data.shape[0] > 0, "Data must be non-empty.")
         precondition(data.shape[1] >= 1, "Data must have atleast single feature.")
-        precondition(labels.shape[0] > 0, "Labels must be non-empty.")
+        precondition(labels.shape[0] > 0, "labels must be non-empty.")
 
         let labels = Tensor<Int32>(labels)
         // find unique classes in target values.
@@ -100,7 +100,7 @@ public class MultinomialNB {
 
     /// Returns log-probability estimates for the test tensor.
     ///
-    /// - Parameter data: Text Tensor<Float> of shape [number of samples, number of features].
+    /// - Parameter data: Test tensor of shape [number of samples, number of features].
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float>{
 
         var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
@@ -115,7 +115,7 @@ public class MultinomialNB {
 
     /// Returns classified test tensor.
     ///
-    /// - Parameter data: Test Tensor<Float> of shape [number of samples, number of features].
+    /// - Parameter data: Test tensor of shape [number of samples, number of features].
     /// - Returns: classified tensor.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
 
