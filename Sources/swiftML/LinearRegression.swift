@@ -15,11 +15,11 @@ public class LinearRegression {
     ///
     /// - Parameters
     ///   - gradientDescent: The gradient descent or singular vector decomposition method to be
-    ///     used for learning, default to 'false'.
-    ///   - iterations: The number of iterations for gradient descent, default to 1000.
-    ///   - learningRate: The learning rate for gardient descent, default to 0.001
+    ///     used for learning, default to `false`.
+    ///   - iterations: The number of iterations for gradient descent, default to `1000`.
+    ///   - learningRate: The learning rate for gardient descent, default to `0.001`.
     ///   - fitIntercept: whether to calculate the intercept for this model. If set to False, no
-    ///     intercept will be used in calculations, default set to true.
+    ///     intercept will be used in calculations, default set to `true`.
     public init(
         gradientDescent: Bool = false,
         iterations: Int = 1000,
@@ -37,7 +37,7 @@ public class LinearRegression {
     }
 
     /// Initialize weights between [-1/N, 1/N].
-    /// - Parameters featuresCount: The number of features in training.
+    /// - Parameters featuresCount: The number of features in training data.
     internal func initializeWeights(featuresCount: Int) {
     
         var w = Tensor<Float>(zeros: [featuresCount, 1])
@@ -62,7 +62,7 @@ public class LinearRegression {
         precondition(data.shape[0] > 0, "data must be non-empty.")
         precondition(data.shape[1] >= 1, "data must have atleast single feature.")
         precondition(data.shape[0] > 0, "labels must be non-empty.")
-        precondition(labels.shape[1] == 1, "labels must have single target.")
+        precondition(labels.shape[1] == 1, "labels must have single target feature.")
 
         var modifiedData: Tensor<Float> = data
        
