@@ -19,11 +19,11 @@ public class PCA {
     ///
     /// - Parameters:
     ///   - componentCount: Number of components to keep.
-    ///   - whiten: When True (False by default) the `components` vectors are multiplied by the
+    ///   - whiten: When `true` (`false` by default) the `components` vectors are multiplied by the
     ///     square root of sampleCount and then divided by the singular values to ensure 
     ///     uncorrelated outputs with unit component-wise variances. Whitening will remove some
     ///     information from the transformed signal (the relative variance scales of the
-    ///     components) but can sometime improve the predictive accuracy of the downstream 
+    ///     components) but can sometime improve the predictive accuracy of the downstream
     ///     estimators by making their data respect some hard-wired assumptions.
     public init(
         componentCount: Int = 0,
@@ -110,6 +110,7 @@ public class PCA {
   
     // This implements the method of `Thomas P. Minka:
     // Automatic Choice of Dimensionality for PCA. NIPS 2000: 598-604`
+    
     /// Returns the number of components best describe the dataset.
     ///
     /// - Parameters:
