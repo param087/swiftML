@@ -14,11 +14,11 @@ public class KNeighborsClassifier {
     /// Create a K neighbors classifier model.
     ///
     /// - Parameters
-    ///   - neighbors: Number of neighbors to use, default to 5.
-    ///   - weights: Weight function used in prediction. Possible values 'uniform' - uniform
-    ///     weighted, 'distance' - weight point by inverse of thier distance. default set to
-    ///     'distance'.
-    ///   - p: The distance metric to use for the tree, default set to 2.
+    ///   - neighbors: Number of neighbors to use, default to `5`.
+    ///   - weights: Weight function used in prediction. Possible values `uniform` - uniform
+    ///     weighted, `distance` - weight point by inverse of thier distance. default set to
+    ///     `distance`.
+    ///   - p: The order of the norm of the difference: `||a - b||_p`, default set to `2`.
     public init(
         neighbors: Int = 5,
         weights: String = "distance",
@@ -26,7 +26,7 @@ public class KNeighborsClassifier {
     ) {
         precondition(neighbors > 1, "Neighbors must be greater than one.")
         precondition(weights == "uniform" || weights == "distance",
-            "weight must be either 'uniform' or 'distance'.")
+            "weights must be either 'uniform' or 'distance'.")
         precondition(p > 1, "p must be greater than one.")
 
         self.neighbors = neighbors
@@ -39,8 +39,8 @@ public class KNeighborsClassifier {
     /// fit Kneighbors classifier model.
     ///
     /// - Parameters
-    ///   - data: Training data Tensor<Float> of shape [number of samples, number of features].
-    ///   - labels: Target value Tensor<Float> of shape [number of samples].
+    ///   - data: Training data tensor of shape [number of samples, number of features].
+    ///   - labels: Target value tensor of shape [number of samples].
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
 
         precondition(data.shape[0] == labels.shape[0],
@@ -58,6 +58,7 @@ public class KNeighborsClassifier {
     /// - Parameters
     ///   - distances: Tensor contains the distance between test tensor and top neighbors.
     ///   - labels: Tensor contains the classes of neighbors.
+    /// - Returns - The weights of each neighbors.
     internal func computeWeights(
         distances: Tensor<Float>,
         labels: Tensor<Float>
@@ -74,7 +75,7 @@ public class KNeighborsClassifier {
             }
             return labelsAndWeightsTensor
         } else if self.weights == "distance" {
-            var matched = Tensor<Float>(zeros:[1, 2])
+            var matched = Tensor<Float>(zeros: [1, 2])
             for i in 0..<distances.shape[0] {
                 if distances[i] == Tensor<Float>([0.0]) {
                     matched[0][0] = labels[i]
@@ -103,7 +104,7 @@ public class KNeighborsClassifier {
       
         // Calculate the distance between test and all data points.
         for i in 0..<self.data.shape[0] {
-            distances[i] = minkowskiDistance(self.data[i], test, self.p)
+            distances[i] = minkowskiDistance(self.data[i], test, p: self.p)
         }
 
         // Find the top neighbors with minimum distance.
@@ -149,7 +150,7 @@ public class KNeighborsClassifier {
 
     /// Returns classified test tensor.
     ///
-    /// - Parameter data: data Tensor<Float> of shape [number of samples, number of features].
+    /// - Parameter data: data tensor of shape [number of samples, number of features].
     /// - Returns: classified class tensor.  
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
 

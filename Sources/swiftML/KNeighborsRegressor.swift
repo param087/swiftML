@@ -15,11 +15,11 @@ public class KNeighborsRegressor {
     /// Create a K neighbors regressor model.
     ///
     /// - Parameters
-    ///   - neighbors: Number of neighbors to use, default to 5.
-    ///   - weights: Weight function used in prediction. Possible values 'uniform' - uniform
-    ///     weighted, 'distance' - weight point by inverse of thier distance. default set to
-    ///     'distance'.
-    ///   - p: The distance metric to use for the tree, default set to 2.
+    ///   - neighbors: Number of neighbors to use, default to `5`.
+    ///   - weights: Weight function used in prediction. Possible values `uniform` - uniform
+    ///     weighted, `distance` - weight point by inverse of thier distance. Default set to
+    ///     `distance`.
+    ///   - p: The order of the norm of the difference: `||a - b||_p`, default set to `2`.
     public init(
         neighbors: Int = 5,
         weights: String = "distance",
@@ -27,7 +27,7 @@ public class KNeighborsRegressor {
     ) {
         precondition(neighbors > 1, "Neighbors must be greater than one.")
         precondition(weights == "uniform" || weights == "distance",
-            "weight must be either 'uniform' or 'distance'.")
+            "weights must be either 'uniform' or 'distance'.")
         precondition(p > 1, "p must be greater than one.")
 
         self.neighbors = neighbors
@@ -40,8 +40,8 @@ public class KNeighborsRegressor {
     /// fit Kneighbors regressor model.
     ///
     /// - Parameters
-    ///   - data: Training data Tensor<Float> of shape [number of samples, number of features].
-    ///   - labels: Target value Tensor<Float> of shape [number of samples].
+    ///   - data: Training data tensor of shape [number of samples, number of features].
+    ///   - labels: Target value tensor of shape [number of samples].
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
 
         precondition(data.shape[0] == labels.shape[0],
@@ -101,7 +101,7 @@ public class KNeighborsRegressor {
         
         // Calculate the distance between test and all data points.
         for i in 0..<self.data.shape[0] {
-            distances[i] = minkowskiDistance(self.data[i], test, self.p)
+            distances[i] = minkowskiDistance(self.data[i], test, p: self.p)
         }
         
         // Find the top neighbors with minimum distance.
@@ -126,7 +126,7 @@ public class KNeighborsRegressor {
   
     /// Returns predicted value of test tensor.
     ///
-    /// - Parameter data: Test Tensor<Float> of shape [number of samples, number of features].
+    /// - Parameter data: Test tensor of shape [number of samples, number of features].
     /// - Returns: Predicted value tensor. 
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
 
