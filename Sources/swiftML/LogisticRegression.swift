@@ -17,10 +17,10 @@ public class LogisticRegression {
     /// Creates a logistic regression model.
     ///
     /// - Parameters
-    ///   - iterations: The number of iterations for gradient descent, default to 0.1.
-    ///   - learningRate: The learning rate for gardient descent, default to 1000.
-    ///   - fitIntercept: whether to calculate the intercept for this model. If set to False, no
-    ///     intercept will be used in calculations, default set to true.
+    ///   - iterations: The number of iterations for gradient descent, default to `0.1`.
+    ///   - learningRate: The learning rate for gardient descent, default to `1000`.
+    ///   - fitIntercept: Whether to calculate the intercept for this model. If set to `false`, no
+    ///     intercept will be used in calculations, default set to `true`.
     public init(
         learningRate: Float = 0.1,
         iterations: Int = 1000,
@@ -40,8 +40,8 @@ public class LogisticRegression {
     /// Fit logistic regression model.
     ///
     /// - Parameters
-    ///   - data: Training data Tensor<Flaot> of shape [number of samples, number of features].
-    ///   - labels: Target value Tensor<Flaot> of shape [number of samples, 1].
+    ///   - data: Training data tensor of shape [number of samples, number of features].
+    ///   - labels: Target value tensor of shape [number of samples, 1].
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
 
         precondition(data.shape[0] == labels.shape[0],
@@ -49,7 +49,7 @@ public class LogisticRegression {
         precondition(data.shape[0] > 0, "data must be non-empty.")
         precondition(data.shape[1] >= 1, "data must have atleast single feature.")
         precondition(labels.shape[0] > 0, "labels must be non-empty.")
-        precondition(labels.shape[1] == 1, "labels must have single target.")
+        precondition(labels.shape[1] == 1, "labels must have single feature target.")
 
         var modifiedData = data
 
@@ -68,8 +68,8 @@ public class LogisticRegression {
         for i in 0..<self.classes.shape[0] {
 
             let condition = Raw.equal(labels, classes[i])
-            let t = Tensor<Int32>(ones:[labels.shape[0],1])
-            let e = Tensor<Int32>(zeros:[labels.shape[0],1])
+            let t = Tensor<Int32>(ones: [labels.shape[0], 1])
+            let e = Tensor<Int32>(zeros: [labels.shape[0], 1])
 
             // create temparary label for one-vs-rest scheme, based on class the selected class
             // labeled as one while rest as zeros.
@@ -93,10 +93,10 @@ public class LogisticRegression {
     
     /// Return the prediction of single sample
     ///
-    /// - Parameters data: Sample tuple Tensor<Flaot> of shape [1, number of features].
+    /// - Parameters data: Sample tuple tensor of shape [1, number of features].
     /// - Returns: Predicted class label.
     public func predictSingleSample(_ data: Tensor<Float>) -> Tensor<Float> {
-        var output = Tensor<Float>(zeros:[weights.count, 1])
+        var output = Tensor<Float>(zeros: [weights.count, 1])
         var counter: Int = 0
 
         for weightIndex in 0..<self.weights.count {

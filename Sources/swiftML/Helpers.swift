@@ -2,9 +2,9 @@ import TensorFlow
 
 /// The generalized inverse of a matrix using its singular-value decomposition (SVD).
 ///
-/// Return the (Moore-Penrose) pseudo-inverse of a matrix.
+/// Returns the (Moore-Penrose) pseudo-inverse of a matrix.
 ///
-/// - Parameter x: The matrix to pseudo-inverse.
+/// - Parameter data: The input matrix to be pseudo-inverse.
 /// - Returns: Pseudo-inverse matrix.
 public func matrixPseudoInverse(_ data: Tensor<Float>) -> Tensor<Float> {
     let svd = Raw.svd(data)
@@ -12,17 +12,17 @@ public func matrixPseudoInverse(_ data: Tensor<Float>) -> Tensor<Float> {
     return matmul(matmul(svd.v, Raw.matrixInverse(diag)), svd.u.transposed())
 }
 
-/// Return Sign correction to ensure deterministic output from SVD.
+/// Returns Sign correction to ensure deterministic output from SVD.
 ///
 /// - Parameters
 ///   - u: The tensor containing of left singular vectors for each matrix.
 ///   - v: The tensor containing of right singular vectors for each matrix.
 /// - Returns: Sign correction to ensure deterministic output.
 public func svdFlip(
-    u: Tensor<Float>,
-    v: Tensor<Float>,
+    u: Tensor<Double>,
+    v: Tensor<Double>,
     uBasedDecision: Bool = true
-) -> (Tensor<Float>, Tensor<Float>) {
+) -> (Tensor<Double>, Tensor<Double>) {
   
     var U = u
     var V = v
@@ -30,7 +30,7 @@ public func svdFlip(
     if uBasedDecision {
     
         let maxAbsCols = abs(u).argmax(squeezingAxis: 0)
-        var colValueForSign = Tensor<Float>(zeros: [u.shape[1]])
+        var colValueForSign = Tensor<Double>(zeros: [u.shape[1]])
         
         for i in 0..<u.shape[1] {
             colValueForSign[i] = u[Int(maxAbsCols[i].scalarized()), i]
@@ -43,7 +43,7 @@ public func svdFlip(
     } else {
         
         let maxAbsRows = abs(v).argmax(squeezingAxis: 1)
-        var rowValueForSign = Tensor<Float>(zeros: [u.shape[0]])
+        var rowValueForSign = Tensor<Double>(zeros: [u.shape[0]])
         
         for i in 0..<u.shape[0] {
             rowValueForSign[i] = v[i, Int(maxAbsRows[i].scalarized())]
@@ -58,23 +58,30 @@ public func svdFlip(
 }
 
   
-/// Return the minkowski distance based on value of p.
+/// Returns the Minkowski distance between two tensors for the given distance metric `p`.
 ///
 /// - Parameters
-///   - a: Input tensor to find distance.
-///   - b: Input tensor to find distance.
-///   - p: The distance metric to use for the tree, default set to 2.
-/// - Returns: Minkowski distance based on value of p.
-public func minkowskiDistance(_ a: Tensor<Float>, _ b: Tensor<Float>, _ p: Int ) -> Tensor<Float> {
+///   - a: The first tensor.
+///   - b: The second tensor.
+///   - p: The order of the norm of the difference: `||a - b||_p`.
+/// - Returns: Minkowski distance based on value of `p`.
+public func minkowskiDistance(_ a: Tensor<Float>, _ b: Tensor<Float>, p: Int ) -> Tensor<Float> {
+    
+    precondition(a.shape == b.shape,"Shape of both the inputs must be same.")
+    precondition(p > 0, "p must be greater than zero.")
+
     return pow(pow(abs(b - a), Float(p)).sum(), 1.0/Float(p))
 }
 
-/// Return the euclidean distance.
+/// Returns the euclidean distance between two tensors.
 ///
 /// - Parameters
-///   - a: Input tensor to find distance.
-///   - b: Input tensor to find distance.
-/// - Returns: euclidean distance.
+///   - a: The first tensor.
+///   - b: The second tensor.
+/// - Returns: Euclidean distance: `||a - b||_2`.
 public func euclideanDistance(_ a: Tensor<Float>, _ b: Tensor<Float>) -> Tensor<Float> {
-    return minkowskiDistance(a, b, 2)
+
+    precondition(a.shape == b.shape,"Shape of both the inputs must be same.")
+    
+    return minkowskiDistance(a, b, p: 2)
 }
