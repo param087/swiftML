@@ -24,8 +24,8 @@ public func svdFlip(
     uBasedDecision: Bool = true
 ) -> (Tensor<Double>, Tensor<Double>) {
   
-    var U = u
-    var V = v
+    var u = u
+    var v = v
     
     if uBasedDecision {
     
@@ -37,8 +37,8 @@ public func svdFlip(
         }
         
         let signs = Raw.sign(colValueForSign)
-        U = U * signs
-        V = V * signs.reshaped(to: [u.shape[1], 1])
+        u = u * signs
+        v = v * signs.reshaped(to: [u.shape[1], 1])
         
     } else {
         
@@ -50,11 +50,11 @@ public func svdFlip(
         }
         
         let signs = Raw.sign(rowValueForSign)
-        U = U * signs
-        V = V * signs.reshaped(to: [u.shape[1], 1])
+        u = u * signs
+        v = v * signs.reshaped(to: [u.shape[1], 1])
     }
     
-    return (U, V)
+    return (u, v)
 }
 
   
@@ -67,7 +67,7 @@ public func svdFlip(
 /// - Returns: Minkowski distance based on value of `p`.
 public func minkowskiDistance(_ a: Tensor<Float>, _ b: Tensor<Float>, p: Int ) -> Tensor<Float> {
     
-    precondition(a.shape == b.shape, "Shape of both the inputs must be same.")
+    precondition(a.shape == b.shape,"Shape of both the inputs must be same.")
     precondition(p > 0, "p must be greater than zero.")
 
     return pow(pow(abs(b - a), Float(p)).sum(), 1.0/Float(p))
@@ -81,7 +81,7 @@ public func minkowskiDistance(_ a: Tensor<Float>, _ b: Tensor<Float>, p: Int ) -
 /// - Returns: Euclidean distance: `||a - b||_2`.
 public func euclideanDistance(_ a: Tensor<Float>, _ b: Tensor<Float>) -> Tensor<Float> {
 
-    precondition(a.shape == b.shape, "Shape of both the inputs must be same.")
+    precondition(a.shape == b.shape,"Shape of both the inputs must be same.")
     
     return minkowskiDistance(a, b, p: 2)
 }
