@@ -24,8 +24,8 @@ public func svdFlip(
     uBasedDecision: Bool = true
 ) -> (Tensor<Double>, Tensor<Double>) {
   
-    var U = u
-    var V = v
+    var u = u
+    var v = v
     
     if uBasedDecision {
     
@@ -37,8 +37,8 @@ public func svdFlip(
         }
         
         let signs = Raw.sign(colValueForSign)
-        U = U * signs
-        V = V * signs.reshaped(to: [u.shape[1], 1])
+        u = u * signs
+        v = v * signs.reshaped(to: [u.shape[1], 1])
         
     } else {
         
@@ -50,11 +50,11 @@ public func svdFlip(
         }
         
         let signs = Raw.sign(rowValueForSign)
-        U = U * signs
-        V = V * signs.reshaped(to: [u.shape[1], 1])
+        u = u * signs
+        v = v * signs.reshaped(to: [u.shape[1], 1])
     }
     
-    return (U, V)
+    return (u, v)
 }
 
 /// Returns the Minkowski distance between two tensors for the given distance metric `p`.
