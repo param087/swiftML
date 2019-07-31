@@ -73,7 +73,7 @@ public class LinearRegression {
         if self.gradientDescent == false {       
             let svd = Raw.svd(matmul(data.transposed(), data))
             let s = Raw.diag(diagonal: svd.s)
-            let dataSqRegInv = matmul(matmul(svd.v, matrixPseudoInverse(s)), svd.u.transposed())
+            let dataSqRegInv = matmul(matmul(svd.v, s.pseudoinverse), svd.u.transposed())
             self.weights = matmul(matmul(dataSqRegInv, data.transposed()), labels)
         } else {
             self.initializeWeights(featuresCount: data.shape[1])
