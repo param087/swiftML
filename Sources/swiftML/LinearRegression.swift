@@ -7,7 +7,7 @@ public class LinearRegression {
     /// The gradient descent or singular vector decomposition method to be used for learning.
     var gradientDescent: Bool
     /// The number of iterations for gradient descent.
-    var iterations: Int
+    var iterationCount: Int
     /// The linear rate gradient descent.
     var learningRate: Float
     /// Whether to calculate the intercept for this model.
@@ -20,21 +20,21 @@ public class LinearRegression {
     /// - Parameters:
     ///   - gradientDescent: The gradient descent or singular vector decomposition method to be
     ///     used for learning. The default is `false`.
-    ///   - iterations: The number of iterations for gradient descent. The default is `1000`.
+    ///   - iterationCount: The number of iterations for gradient descent. The default is `1000`.
     ///   - learningRate: The learning rate for gradient descent. The default is `0.001`.
     ///   - fitIntercept: Whether to calculate the intercept for this model. If `false`, no
     ///     intercept will be used in calculations. The default is `true`.
     public init(
         gradientDescent: Bool = false,
-        iterations: Int = 1000,
+        iterationCount: Int = 1000,
         learningRate: Float = 0.001,
         fitIntercept: Bool = true
     ) {
-        precondition(iterations > 0, "Number of iterations must be positive.")
+        precondition(iterationCount > 0, "Iteration count must be positive.")
         precondition(learningRate >= 0, "Learning rate must be non-negative.")
 
         self.gradientDescent = gradientDescent
-        self.iterations = iterations
+        self.iterationCount = iterationCount
         self.learningRate = learningRate
         self.weights = Tensor<Float>(0)
         self.fitIntercept = fitIntercept
@@ -78,7 +78,7 @@ public class LinearRegression {
         } else {
             self.initializeWeights(featuresCount: data.shape[1])
 
-            for _ in 0..<self.iterations {
+            for _ in 0..<self.iterationCount {
                 let predictedLabels = matmul(data, self.weights)
                 let weightsGradient = -1 * matmul(data.transposed(), (labels - predictedLabels))
                 self.weights = self.weights - (self.learningRate * weightsGradient)
