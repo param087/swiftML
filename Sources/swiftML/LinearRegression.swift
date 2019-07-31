@@ -21,8 +21,8 @@ public class LinearRegression {
     ///   - gradientDescent: The gradient descent or singular vector decomposition method to be
     ///     used for learning. The default is `false`.
     ///   - iterations: The number of iterations for gradient descent. The default is `1000`.
-    ///   - learningRate: The learning rate for gardient descent. The default is `0.001`.
-    ///   - fitIntercept: Whether to calculate the intercept for this model. If false, no
+    ///   - learningRate: The learning rate for gradient descent. The default is `0.001`.
+    ///   - fitIntercept: Whether to calculate the intercept for this model. If `false`, no
     ///     intercept will be used in calculations. The default is `true`.
     public init(
         gradientDescent: Bool = false,
@@ -58,12 +58,12 @@ public class LinearRegression {
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count, 1]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
-        precondition(data.shape[0] == labels.shape[0],
-            "data and labels must have same number of samples.")
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         precondition(data.shape[1] >= 1, "Data must have feature count greater than one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(labels.shape[1] == 1, "Labels must have single target feature.")
+        precondition(data.shape[0] == labels.shape[0],
+                     "Data and labels must have the same sample count.")
 
         var data: Tensor<Float> = data
         if self.fitIntercept {
