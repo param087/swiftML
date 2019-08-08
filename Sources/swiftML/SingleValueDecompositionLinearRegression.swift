@@ -33,7 +33,7 @@ public class SingleValueDecompositionLinearRegression: LinearRegression {
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(labels.shape[1] == 1, "Labels must have single target feature.")
         precondition(data.shape[0] == labels.shape[0],
-                     "Data and labels must have the same sample count.")
+            "Data and labels must have the same sample count.")
 
         var data: Tensor<Float> = data
         if self.fitIntercept {
@@ -45,6 +45,5 @@ public class SingleValueDecompositionLinearRegression: LinearRegression {
         let s = Raw.diag(diagonal: svd.s)
         let dataSqRegInv = matmul(matmul(svd.v, s.pseudoinverse), svd.u.transposed())
         self.weights = matmul(matmul(dataSqRegInv, data.transposed()), labels)
-        
     }
 }

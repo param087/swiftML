@@ -2,12 +2,9 @@ import TensorFlow
 
 extension Tensor where Scalar: TensorFlowFloatingPoint {
     /// The (Moore-Penrose) pseudoinverse of a matrix using its singular-value decomposition (SVD).
-<<<<<<< HEAD
-=======
     ///
     /// Reference: ["Moore–Penrose inverse"](
     /// https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse)
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
     public var pseudoinverse: Tensor {
         let svd = Raw.svd(self)
         let diag = Raw.diag(diagonal: svd.s)
@@ -15,25 +12,6 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     }
 }
 
-<<<<<<< HEAD
-/// Returns sign-corrected versions of the left and right singular vectors from
-/// single value decomposition (SVD).
-///
-/// - Parameters:
-///   - u: The tensor containing the left singular vectors for each matrix.
-///   - v: The tensor containing the right singular vectors for each matrix.
-/// - Returns: The sign corrected versions of `u` and `v` to ensure
-///   deterministic output.
-public func svdFlip<Scalar: TensorFlowFloatingPoint>(
-    u: Tensor<Scalar>,
-    v: Tensor<Scalar>,
-    uBasedDecision: Bool = true
-) -> (Tensor<Scalar>, Tensor<Scalar>) {
-    let signs: Tensor<Scalar>
-    if uBasedDecision {
-        let maxAbsCols = abs(u).argmax(squeezingAxis: 0)
-        var colValueForSign = Tensor<Scalar>(zeros: [u.shape[1]])
-=======
 /// Returns deterministic SVD contains sign-corrected versions of left singular vectors and right
 /// singular vectors from input matrix.
 ///
@@ -58,37 +36,25 @@ public func deterministicSvd<T: FloatingPoint & TensorFlowScalar>(
     if columnBasedSignFlipping {
         let maxAbsCols = abs(u).argmax(squeezingAxis: 0)
         var colValueForSign = Tensor<T>(zeros: [u.shape[1]])
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
         for i in 0..<u.shape[1] {
             colValueForSign[i] = u[Int(maxAbsCols[i].scalarized()), i]
         }
         signs = Raw.sign(colValueForSign)
     } else {
         let maxAbsRows = abs(v).argmax(squeezingAxis: 1)
-<<<<<<< HEAD
-        var rowValueForSign = Tensor<Scalar>(zeros: [u.shape[0]])
-=======
         var rowValueForSign = Tensor<T>(zeros: [u.shape[0]])
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
         for i in 0..<u.shape[0] {
             rowValueForSign[i] = v[i, Int(maxAbsRows[i].scalarized())]
         }
         signs = Raw.sign(rowValueForSign)
     }
-<<<<<<< HEAD
-    return (u * signs, v * signs.reshaped(to: [u.shape[1], 1]))
-=======
     return (s, u * signs, v * signs.reshaped(to: [u.shape[1], 1]))
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
 }
 
 /// Returns the Minkowski distance between two tensors for the given distance metric `p`.
 ///
-<<<<<<< HEAD
-=======
 /// Reference: ["Minkowski distance"](https://en.wikipedia.org/wiki/Minkowski_distance)
 ///
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
 /// - Parameters:
 ///   - a: The first tensor.
 ///   - b: The second tensor.
@@ -104,11 +70,8 @@ public func minkowskiDistance<Scalar: TensorFlowFloatingPoint>(
 
 /// Returns the Euclidean distance between two tensors.
 ///
-<<<<<<< HEAD
-=======
 /// Reference: ["Euclidean distance"](https://en.wikipedia.org/wiki/Euclidean_distance)
 ///
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f
 /// - Parameters:
 ///   - a: The first tensor.
 ///   - b: The second tensor.
@@ -118,8 +81,4 @@ public func euclideanDistance<Scalar: TensorFlowFloatingPoint>(
 ) -> Tensor<Scalar> {
     precondition(a.shape == b.shape, "Both inputs must have the same shape.")
     return minkowskiDistance(a, b, p: 2)
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 068e99a74c4c913f173f9445a95440eab4ee503f

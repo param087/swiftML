@@ -18,7 +18,6 @@ public protocol LinearRegression {
 }
 
 extension LinearRegression {
-
     /// Returns prediction using linear model.
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
@@ -45,7 +44,7 @@ extension LinearRegression {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(data.shape[0] == labels.shape[0],
-                     "Data and labels must have the same sample count.")
+            "Data and labels must have the same sample count.")
         
         let predictedLabels = self.prediction(for: data)
         let u = pow((labels - predictedLabels),2).sum()

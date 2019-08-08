@@ -58,7 +58,7 @@ public class GradientDescentLinearRegression: LinearRegression {
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(labels.shape[1] == 1, "Labels must have single target feature.")
         precondition(data.shape[0] == labels.shape[0],
-                     "Data and labels must have the same sample count.")
+            "Data and labels must have the same sample count.")
 
         var data: Tensor<Float> = data
         if self.fitIntercept {
