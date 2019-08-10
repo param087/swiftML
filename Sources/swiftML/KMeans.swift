@@ -2,17 +2,19 @@ import TensorFlow
 
 /// K-Means Clustering
 public class KMeans {
-    
+    /// Method for initialization.
     var initializer: String
+    /// Seed for initializing the pseudo-random number generator.
     var seed: Int64
-    var maxIterations: Int
+    /// Maximum number of iterations of the k-means algorithm to run.
+    var maximumIterationCount: Int
+    /// The number of clusters to form as well as the number of centroids to generate.
     var clusterCount: Int
-
-    // Centroids of Clsuters.
+    /// Cluster centers which data is assigned to.
     public var centroids: Tensor<Float>
-    // Inertia is the sum of square distances of samples to their closest cluster center.
+    /// Inertia is the sum of square distances of samples to their closest cluster center.
     public var inertia: Tensor<Float>
-    // Predicted cluster labels.
+    /// Predicted cluster for training data.
     public var labels: Tensor<Int32>
 
   
@@ -21,25 +23,25 @@ public class KMeans {
     /// - Parameters
     ///   - clusterCount: The number of clusters to form as well as the number of centroids to
     ///     generate, default to `2`.
-    ///   - maxIterations: Maximum number of iterations of the k-means algorithm to run, default
-    ///     to `300`.
+    ///   - maximumIterationCount: Maximum number of iterations of the k-means algorithm to run,
+    ///     default to `300`.
     ///   - initializer: Select the initialization method for centroids. `kmean++`, `random`
     ///     methods for initialization, default to `kmean++`.
     ///   - seed: Used to initialize a pseudo-random number generator, default to `0`.
     public init(
         clusterCount: Int = 2,
-        maxIterations: Int = 300,
+        maximumIterationCount: Int = 300,
         initializer: String = "kmean++",
         seed: Int64 = 0
     ) {
 
-        precondition(clusterCount > 1, "Number of clusters must be greater than one.")
-        precondition(maxIterations >= 0, "Maximum number of Iterations must be non-negative.")
+        precondition(clusterCount > 1, "Clusters count must be greater than one.")
+        precondition(maximumIterationCount >= 0, "Maximum iteration count must be non-negative.")
         precondition(initializer == "kmean++" || initializer == "random",
-            "intialializer must be 'keman++' or 'random'.")
+            "Intialializer must be `keman++` or `random`.")
         
         self.clusterCount = clusterCount
-        self.maxIterations = maxIterations
+        self.maximumIterationCount = maximumIterationCount
         self.initializer = initializer
         self.seed = seed
         self.centroids = Tensor<Float>([0.0])
@@ -47,12 +49,12 @@ public class KMeans {
         self.labels = Tensor<Int32>([0])
     }
   
-    /// Return the index of minimum euclidean distance between tensors.
+    /// Return the index of centroid having minimum euclidean distance with data.
     ///
     /// - Parameters
-    ///   - centroids: Centroids tensor of shape [1, number of features].
-    ///   - data: Data tensor of shape [number of sample, number of features].
-    /// - Returns: Index of minimum euclidean distance tensor.
+    ///   - centroids: Centroids with shape `[1, feature count]`.
+    ///   - data: Data tensor of shape `[sample count, feature count]`.
+    /// - Returns: Index of minimum euclidean distance centroid.
     internal func nearest(centroids: Tensor<Float>, data: Tensor<Float>) -> Tensor<Int32> {
         var distances = Tensor<Float>(zeros: [centroids.shape[0], 1])
         for i in 0..<centroids.shape[0] {
@@ -63,7 +65,10 @@ public class KMeans {
 
     /// Heuristic Initialization of centroids.
     ///
-    /// - Parameter data: Data tensor of shape [number of sample, number of features].
+    /// Reference: ["k-means++: The Advantages of Careful Seeding"](
+    /// http://ilpubs.stanford.edu:8090/778/1/2006-13.pdf)
+    ///
+    /// - Parameter data: Data with shape `[sample count, feature count]`.
     internal func kmeanPlusPlus(_ data: Tensor<Float>) {
         var distance = Tensor<Float>(zeros: [data.shape[0], 1])
         
@@ -105,9 +110,9 @@ public class KMeans {
     
     /// Random Initialization of centroids.
     ///
-    /// - Parameter data: Data tensor of shape [number of sample, number of features].
+    /// - Parameter data: Data with shape `[sample count, feature count]`.
     internal func randomInitializer(_ data: Tensor<Float>) {
-        /// shuffle the input Tensor
+        // shuffle the input data.
         let shuffled = Raw.randomShuffle(value: data, seed: self.seed)
         for i in 0..<clusterCount {
             self.centroids[i] = shuffled[i]
@@ -116,12 +121,11 @@ public class KMeans {
     
     /// Compute k-means clustering.
     ///
-    /// - Parameter data: Input data tensor of shape [number of sample, number of features].
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Float>) {
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
 
-        precondition(data.shape[0] > 0, "data must be non-empty.")
-
-        // reshape centroid of required shape based on input Tensor and number of clusters.
+        // reshape centroid of required shape based on input data and number of clusters.
         self.centroids = Tensor<Float>(zeros: [clusterCount, data.shape[1]])
         self.labels = Tensor<Int32>(zeros: [data.shape[0], 1])
         
@@ -133,7 +137,7 @@ public class KMeans {
         
         var oldCentroids = centroids
 
-        for _ in 0..<self.maxIterations {
+        for _ in 0..<self.maximumIterationCount {
             
             var indicesArray = [[Tensor<Int32>]]()
             
@@ -172,7 +176,7 @@ public class KMeans {
 
         }
         
-        // sum of square distances from the closest cluster
+        // sum of square distances from the closest cluster.
         for i in 0..<data.shape[0] {
             self.inertia = self.inertia + 
                 pow((self.centroids[Int(self.labels[i].scalarized())] - data[i]), 2).sum()
@@ -181,10 +185,10 @@ public class KMeans {
   
     /// Returns the prediced cluster labels.
     ///
-    /// - Returns: Predicted label tensor.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Returns: Predicted prediction for input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-
-        precondition(data.shape[0] > 0, "data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
 
         var labels = Tensor<Int32>(zeros: [data.shape[0], 1])
         for i in 0..<data.shape[0] {
@@ -195,11 +199,10 @@ public class KMeans {
   
     /// Returns fit and prediced cluster labels.
     ///
-    /// - Parameter data: Input data tensor of shape [number of sample, number of features].
-    /// - Returns: Predicted label tensor.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Returns: Predicted prediction for input data.
     public func fitAndPrediction(for data: Tensor<Float>) -> Tensor<Int32> {
-
-        precondition(data.shape[0] > 0, "data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
         
         self.fit(data: data)
         return self.prediction(for: data)
@@ -207,11 +210,10 @@ public class KMeans {
     
     /// Returns Transform input to a cluster-distance space.
     ///
-    /// - Parameter data: Input data tensor of shape [number of sample, number of features].
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed input to a cluster-distance space.
     public func transformation(for data: Tensor<Float>) -> Tensor<Float> {
-        
-        precondition(data.shape[0] > 0, "data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
 
         var transMat = Tensor<Float>(zeros:[data.shape[0], self.clusterCount])
         
@@ -225,11 +227,10 @@ public class KMeans {
 
     /// Returns fit and Transform input to a cluster-distance space.
     ///
-    /// - Parameter data: Input data tensor of shape [number of sample, number of features].
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed data to a cluster-distance space.
     public func fitAndTransformation(for data: Tensor<Float>) -> Tensor<Float> {
-
-        precondition(data.shape[0] > 0, "data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
 
         self.fit(data: data)
         return self.transformation(for: data)
@@ -241,5 +242,5 @@ public class KMeans {
     public func score() -> Tensor<Float> {
         return self.inertia
     }
-     
+
 }
