@@ -1,18 +1,32 @@
 import TensorFlow
 
 /// Principal Component Analysis
+///
+/// Reference: ["Principal Component Analysis"](
+/// https://en.wikipedia.org/wiki/Principal_component_analysis)
 public class PCA {
-  
+    /// The estimated number of components.
     public var componentCount: Int
+    /// Whitening will remove some information from the transformed signal (the relative variance
+    /// scales of the components) but can sometime improve the predictive accuracy of the
+    /// downstream estimators by making their data respect some hard-wired assumptions.
     public var whiten: Bool
-
+    /// Number of samples in the training data.
     public var sampleCount: Int
+    /// Number of feature in the training data.
     public var featureCount: Int
+    /// Per-feature empirical mean, estimated from the training set.
     public var mean: Tensor<Double>
+    /// The estimated noise covariance.
     public var noiseVariance: Tensor<Double>
+    /// Principal axes in feature space, representing the directions of maximum variance in the
+    /// data.
     public var components: Tensor<Double>
+    /// The amount of variance explained by each of the selected components.
     public var explainedVariance: Tensor<Double>
+    /// Percentage of variance explained by each of the selected components.
     public var explainedVarianceRatio: Tensor<Double>
+    /// The singular values corresponding to each of the selected components.
     public var singularValues: Tensor<Double>  
     
     /// Create Principal Component Analysis model.
@@ -20,7 +34,7 @@ public class PCA {
     /// - Parameters:
     ///   - componentCount: Number of components to keep.
     ///   - whiten: When `true` (`false` by default) the `components` vectors are multiplied by the
-    ///     square root of sampleCount and then divided by the singular values to ensure 
+    ///     square root of sample count and then divided by the singular values to ensure 
     ///     uncorrelated outputs with unit component-wise variances. Whitening will remove some
     ///     information from the transformed signal (the relative variance scales of the
     ///     components) but can sometime improve the predictive accuracy of the downstream
@@ -29,7 +43,6 @@ public class PCA {
         componentCount: Int = 0,
         whiten: Bool = false
     ) {
-
         self.componentCount = componentCount
         self.whiten = whiten
         
@@ -48,8 +61,8 @@ public class PCA {
     /// - Parameters:
     ///   - spectrum: The amount of variance explained by each of the seleted components.
     ///   - rank: Test rank value.
-    ///   - sampleCount: The number of samples.
-    ///   - featureCount: The number of features.
+    ///   - sampleCount: The sample count.
+    ///   - featureCount: The features count.
     /// - Returns: Log-likelihood of rank over given dataset.
     func assessDimension(
         _ spectrum: Tensor<Double>,
@@ -57,7 +70,6 @@ public class PCA {
         _ sampleCount: Int,
         _ featureCount: Int
     ) -> Tensor<Double> {
-        
         var pu = -Double(rank) * Double(log(2.0))
         
         for i in 0..<rank {
@@ -104,26 +116,24 @@ public class PCA {
         let temp = Double(rank) * Double(log(Float(sampleCount))) / 2.0
         let logLikelyhood = pu + pl! + pv + pp - pa / 2.0 - temp
         
-        return Tensor<Double>(logLikelyhood)
-        
+        return Tensor<Double>(logLikelyhood)       
     }
   
-    // This implements the method of `Thomas P. Minka:
-    // Automatic Choice of Dimensionality for PCA. NIPS 2000: 598-604`
-    
     /// Returns the number of components best describe the dataset.
+    ///
+    /// Reference: ["Automatic Choice of Dimensionality for PCA"](
+    /// https://pdfs.semanticscholar.org/cbaa/eb023b8a07ee05a617791f7740a176a1de1b.pdf)
     ///
     /// - Parameters:
     ///   - spectrum: The amount of variance explained by each of the seleted components.
-    ///   - sampleCount: The number of samples.
-    ///   - featureCount: The number of features.
+    ///   - sampleCount: The sample count.
+    ///   - featureCount: The feature count.
     /// - Returns: The number of components best describe the dataset.
     func inferDimension(
         spectrum: Tensor<Double>,
         sampleCount: Int,
         featureCount: Int
     ) -> Int {
-      
         let spectrumCount = spectrum.shape[0]
         var logLikelihood = Tensor<Double>(zeros: [spectrumCount])
         
@@ -134,31 +144,30 @@ public class PCA {
         return Int(logLikelihood.argmax().scalarized())
     }
   
-    /// Fit Principal Component Analysis.
+    /// Fit a Principal Component Analysis.
     ///
-    /// - Parameter data: Training Tensor<Double> of shape[sampleCount, featureCount],
-    ///   where sampleCount is the number of sample and featureCount is the number of
-    ///   features.
+    /// - Parameter data: Training data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Double>) {
-        
-        let sampleCount = data.shape.dimensions[0]
-        let featureCount = data.shape.dimensions[1]
+        self.sampleCount = data.shape.dimensions[0]
+        self.featureCount = data.shape.dimensions[1]
+        /// Local component count and can be modified based on type of componet selection algorithm
+        /// execuation.
         var componentCount = self.componentCount
+        /// Singular values.
         var s: Tensor<Double>
+        /// Left singular vectors.
         var u: Tensor<Double>
+        /// Right singular vectors.
         var v: Tensor<Double>
         
+        precondition(componentCount >= 0, "Component count must be non-negative.")
         precondition(componentCount <= featureCount,
-            "Number of Components must be smaller than Number of features")
+            "Component count must be smaller than feature counts.")
         
         self.mean = data.mean(alongAxes: 0)
         
-        let tempData = data - self.mean
-        let svd = Raw.svd(tempData)
-        s = svd.s
-        u = svd.u
-        v = svd.v.transposed()
-        (u, v) = svdFlip(u: u, v: v)
+        let dataDeviation = data - self.mean
+        (s, u, v) = deterministicSvd(dataDeviation)
         
         let components = v
         let explainedVariance = pow(s, 2) / Tensor<Double>(Double(sampleCount - 1))
@@ -178,8 +187,6 @@ public class PCA {
             self.noiseVariance = Tensor<Double>(0.0)
         }
         
-        self.sampleCount = sampleCount
-        self.featureCount = featureCount
         self.components = components
             .slice(lowerBounds: [0, 0], upperBounds: [componentCount, components.shape[1]])
         self.componentCount = componentCount
@@ -191,13 +198,11 @@ public class PCA {
             .slice(lowerBounds: [0], upperBounds: [self.componentCount])
     }
 
-    /// Returns dimensionally reduce data
+    /// Returns dimensionally reduced data.
     ///
-    /// - Parameter data: Input Tensor<Double> of shape[sampleCount, featureCount], where
-    ///   sampleCount is the number of samples and featureCount is the number of features.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Dimensionally reduced data.
     public func transformation(for data: Tensor<Double>) -> Tensor<Double> {
-
         var transformedData = matmul((data - self.mean), self.components.transposed())
 
         if self.whiten {
@@ -207,13 +212,11 @@ public class PCA {
         return transformedData
     }
 
-    /// Return transform data to its original space.
+    /// Returns transform data to its original space.
     ///
-    /// - Parameter data: Input Tensor<Double> of shape[sampleCount, featureCount], where
-    ///   sampleCount is the number of sample and featureCount is the number of features.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Original data whose transform would be data.
     public func inverseTransformation(for data: Tensor<Double>) -> Tensor<Double> {
-        
         if self.whiten {
             return matmul(data, sqrt(self.explainedVariance
                 .reshaped(to: [self.explainedVariance.shape[1], 1]) * self.components)) + self.mean
