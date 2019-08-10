@@ -77,7 +77,7 @@ public func minkowskiDistance<Scalar: TensorFlowFloatingPoint>(
 ///   - b: The second tensor.
 /// - Returns: The Euclidean distance: `||a - b||_2`.
 public func euclideanDistance<Scalar: TensorFlowFloatingPoint>(
-    _ a: Tensor<Scalar>, _ b: Tensor<Scalar>, p: Int
+    _ a: Tensor<Scalar>, _ b: Tensor<Scalar>
 ) -> Tensor<Scalar> {
     precondition(a.shape == b.shape, "Both inputs must have the same shape.")
     return minkowskiDistance(a, b, p: 2)
