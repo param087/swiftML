@@ -3,19 +3,22 @@ import TensorFlow
 /// Multinomial naive bayes classifier.
 ///
 /// Multinomial naive bayes classifier used to classify discrete features.
+///
+/// Reference: ["Multinomial Naive bayes"](
+/// https://nlp.stanford.edu/IR-book/html/htmledition/naive-bayes-text-classification-1.html)
 public class MultinomialNB {
-
+    /// Additive smoothing parameter.
     public var alpha: Float
-    // The prior log probability for each class.
+    /// The prior log probability for each class.
     public var classLogPrior: Tensor<Float>
-    // Log probability of each word.
+    /// Log probability of each word.
     public var featureLogProb: Tensor<Float>
-    // Unique classes in target value set.
+    /// Unique classes in target value set.
     public var classes: Tensor<Int32>
-    // Tensor contains the index of class in classes.
+    /// Tensor contains the index of class in classes.
     public var indices: Tensor<Int32>
   
-    /// Create a multinomial naive model.
+    /// Create a multinomial naive bayes model.
     ///
     /// - Parameter alpha: Additive smoothing parameter, default to `1.0`.
     public init(
@@ -28,26 +31,25 @@ public class MultinomialNB {
         self.featureLogProb = Tensor<Float>([0.0])
     }
   
-    /// Fit multinomial naive bayes classifier model.
+    /// Fit a multinomial naive bayes classifier model.
     ///
     /// - Parameters
-    ///   - data: Training data tensor of shape [number of samples, number of features].
-    ///   - labels: Target value tensor of shape [number of samples].
-    public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
-      
+    ///   - data: Training data with shape `[sample count, feature count]`.
+    ///   - labels: Target values with shape `[sample count]`.
+    public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(data.shape[1] >= 1, "Data must have atleast single feature.")
-        precondition(labels.shape[0] > 0, "labels must be non-empty.")
+            "Data and labels must have same sample count.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
-        let labels = Tensor<Int32>(labels)
         // find unique classes in target values.
         (self.classes, self.indices) = Raw.unique(labels.flattened())
         
-        precondition(self.classes.shape[0] > 1, "labels must have more than one classes.")
+        precondition(self.classes.shape[0] > 1, "Labels must have more than one class.")
 
-        // Initialize the classLogPrior and featureLogProb based on number of features and sample.
+        // Initialize the classLogPrior and featureLogProb based on feature count and sample count.
         var separated = [[Tensor<Float>]]()
         self.classLogPrior = Tensor<Float>(zeros: [self.classes.shape[0]])
         self.featureLogProb = Tensor<Float>(zeros: [self.classes.shape[0], data.shape[1]])
@@ -66,7 +68,7 @@ public class MultinomialNB {
       
         let sampleCount = data.shape[0]
       
-        // Calculate logp^(c) , the prior log probability for each class.
+        // Calculate `logp^(c)`, the prior log probability for each class.
         for index in 0..<separated.count {
             let temp = Float(separated[index].count) / Float(sampleCount)
             self.classLogPrior[index] = Tensor<Float>(log(temp))
@@ -74,7 +76,7 @@ public class MultinomialNB {
       
         var count = Tensor<Float>(zeros: [separated.count, data.shape[1]])
   
-        // Count each word for each class and add alpha as smoothing.
+        // Count each word for each class and add `alpha` as smoothing.
         for i in 0..<separated.count {
             for j in 0..<data.shape[1] {
                 var temp = Tensor<Float>(0.0)
@@ -85,7 +87,7 @@ public class MultinomialNB {
             }
         }
 
-        // Calculate the log probability of each word, logp^(t|c)
+        // Calculate the log probability of each word, `logp^(t|c)`.
         for i in 0..<count.shape[0] {
             var sum = Tensor<Float>(0.0)
             
@@ -98,11 +100,10 @@ public class MultinomialNB {
         }
     }
 
-    /// Returns log-probability estimates for the test tensor.
+    /// Returns log-probability estimates for the test data.
     ///
-    /// - Parameter data: Test tensor of shape [number of samples, number of features].
+    /// - Parameter data: Test data with shape `[sample count, feature count]`.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float>{
-
         var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
 
         for i in 0..<data.shape[0] {
@@ -113,13 +114,12 @@ public class MultinomialNB {
         return predictLogProb
     }
 
-    /// Returns classified test tensor.
+    /// Returns classified input data.
     ///
-    /// - Parameter data: Test tensor of shape [number of samples, number of features].
-    /// - Returns: classified tensor.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Returns: Classification of input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         
         let predictLogProb = self.predictLogProba(data: data)
         
@@ -134,17 +134,16 @@ public class MultinomialNB {
     /// Returns mean accuracy on the given test data and labels.
     ///
     /// - Parameters
-    ///   - data: Sample tensor of shape [number of samples, number of features].
-    ///   - labels: Target label tensor of shape [number of samples].
+    ///   - data: Sample data with shape `[sample count, feature count]`.
+    ///   - labels: Target values with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given test data and labels.
-    public func score(data: Tensor<Float>, labels: Tensor<Float>) -> Float {
-
+    public func score(data: Tensor<Float>, labels: Tensor<Int32>) -> Float {
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(labels.shape[0] > 0, "labels must be non-empty.")
+            "Data and labels must have the same sample count.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
-        let result = Tensor<Float>(self.prediction(for: data))
+        let result = self.prediction(for: data)
         var count: Int = 0
         for i in 0..<result.shape[0] {
             if result[i] == labels[i] {

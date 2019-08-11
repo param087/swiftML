@@ -4,33 +4,32 @@ import TensorFlow
 ///
 /// Gaussian naive bayes classifier used to classify continuous features.
 public class GaussianNB {
-
-    // Unique classes in target value set.
+    /// Unique classes in target value set.
     public var classes: Tensor<Int32>
-    // Tensor contains the index of class in classes.
+    /// Tensor contains the index of class in classes.
     public var indices: Tensor<Int32>
-    // The mean and the standard deviation of each attribute for each class.
+    /// The mean and the standard deviation of each feature of each class.
     public var model: Tensor<Float>
   
-    /// Create a Gaussian naive model.
+    /// Create a Gaussian naive bayes model.
     public init() {
         self.classes = Tensor<Int32>([0])
         self.indices = Tensor<Int32>([0])
         self.model = Tensor<Float>([0.0])
     }
 
-    /// Fit Gaussian naive bayes classifier model.
+    /// Fit a Gaussian naive bayes classifier model.
     ///
     /// - Parameters
-    ///   - data: Training data tensor of shape [number of samples, number of features].
-    ///   - labels: Target value tensor of shape [number of samples].
+    ///   - data: Training data with shape `[sample count, feature count]`.
+    ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
-      
         precondition(data.shape[0] == labels.shape[0], 
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(data.shape[1] >= 1, "Data must have atleast single feature.")
-        precondition(labels.shape[0] > 0, "labels must be non-empty.")
+            "Data and labels must have same sample count.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
         let labels = Tensor<Int32>(labels)
         // find unique classes in target values.
@@ -60,19 +59,18 @@ public class GaussianNB {
         }
     }
 
-    /// Returns gaussian distribution in log.
+    /// Returns a log of gaussian distribution.
     ///
     /// - Parameters
-    ///   - data: Input tensor to find gausssian distribution.
+    ///   - data: Input data to find gausssian distribution.
     ///   - mean: Mean of input tensor.
-    ///   - std: Standard deviation of input tensor.
-    /// - Returns: Ggaussian distribution in log.
+    ///   - std: Standard deviation of input data.
+    /// - Returns: Log of gaussian distribution.
     internal func prob(
         data: Tensor<Float>,
         mean: Tensor<Float>,
         std: Tensor<Float>
     ) -> Tensor<Float> {
-
         // Tensor Double is used to prevent tenor overflow.
         let data = Tensor<Double>(data)
         let mean = Tensor<Double>(mean)
@@ -84,10 +82,9 @@ public class GaussianNB {
 
     /// Returns predict log probability.
     ///
-    /// - Parameter data: Input tensor to predict log probability.
-    /// - Return: predict log probability
+    /// - Parameter data: Input data to predict log probability.
+    /// - Return: predicted log probability.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float> {
-
         var predictLogProb = Tensor<Float>(zeros:[data.shape[0], self.classes.shape[0]])
  
         for i in 0..<data.shape[0] {
@@ -104,12 +101,11 @@ public class GaussianNB {
         return predictLogProb
     }
   
-    /// Returns classified test tensor.
+    /// Returns classification.
     ///
-    /// - Parameter data: Test tensor of shape [number of samples, number of features].
-    /// - Returns: classified tensor.
+    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Returns: prediction of input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
-
         precondition(data.shape[0] > 0, "Data must be non-empty.")
 
         var labels = Tensor<Int32>(zeros: [data.shape[0]])
@@ -121,18 +117,17 @@ public class GaussianNB {
         return Tensor<Float>(labels)
     }
 
-    /// Returns mean accuracy on the given test data and labels.
+    /// Returns mean accuracy on the given input data and labels.
     ///
     /// - Parameters
-    ///   - data: Sample tensor of shape [number of samples, number of features].
-    ///   - labels: Target label tensor of shape [number of samples].
-    /// - Returns: Returns the mean accuracy on the given test data and labels.
+    ///   - data: Sample data with shape `[sample count, feature count]`.
+    ///   - labels: Target label with shape `[sample count]`.
+    /// - Returns: Returns the mean accuracy on the given input data and labels.
     public func score(data: Tensor<Float>, labels: Tensor<Float>) -> Float {
-
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "data must be non-empty.")
-        precondition(labels.shape[0] > 0, "labels must be non-empty.")
+            "Data and labels must have same sample count.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
         let result = self.prediction(for: data)
         var count: Int = 0
