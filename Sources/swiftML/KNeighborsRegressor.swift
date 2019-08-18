@@ -29,7 +29,7 @@ public class KNeighborsRegressor {
         weights: String = "distance",
         p: Int = 2
     ) {
-        precondition(neighborCount > 1, "Neighbor count must be greater than one.")
+        precondition(neighborCount >= 1, "Neighbor count must be greater than or equal to one.")
         precondition(weights == "uniform" || weights == "distance",
             "Weights must be either 'uniform' or 'distance'.")
         precondition(p > 0, "p must be positive.")
@@ -47,11 +47,12 @@ public class KNeighborsRegressor {
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(data.shape[1] >= 1, "Data must have atleast single feature.")
-        precondition(labels.shape[0] > 0, "Labels must be non-empty.")
+            "Data and labels must have the same sample count.")
 
         self.data = data
         self.labels = labels
@@ -131,7 +132,7 @@ public class KNeighborsRegressor {
     /// - Parameter data: Test data with shape `[sample count, feature count]`.
     /// - Returns: Predicted value tensor.
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
 
         var predictions = Tensor<Float>(zeros: [data.shape[0]])
         for i in 0..<data.shape[0] {
@@ -147,10 +148,10 @@ public class KNeighborsRegressor {
     ///   - labels: Target values with shape `[sample count]`.
     /// - Returns: The coefficient of determination (`R^2`) of the prediction.
     public func score(data: Tensor<Float>, labels: Tensor<Float>) -> Float {
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(labels.shape[0] > 0, "Labels must be non-empty.")
+            "Data and labels must have the same sample count.")
 
         let predictedLabels = self.prediction(for: data)
         let u = pow((labels - predictedLabels),2).sum() 

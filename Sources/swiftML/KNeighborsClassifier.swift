@@ -1,6 +1,6 @@
 import TensorFlow
 
-/// K neighbors classifier.
+/// K-neighbors classifier.
 ///
 /// Classifier implementing the k-nearest neighbors vote.
 public class KNeighborsClassifier {
@@ -28,7 +28,7 @@ public class KNeighborsClassifier {
         weights: String = "distance",
         p: Int = 2
     ) {
-        precondition(neighborCount > 1, "Neighbor count must be greater than one.")
+        precondition(neighborCount >= 1, "Neighbor count must be greater than or equal to one.")
         precondition(weights == "uniform" || weights == "distance",
             "Weights must be either 'uniform' or 'distance'.")
         precondition(p > 1, "p must be positive.")
@@ -46,11 +46,12 @@ public class KNeighborsClassifier {
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(data.shape[1] >= 1, "Data must have atleast single feature.")
-        precondition(labels.shape[0] > 0, "Labels must be non-empty.")
+            "Data and labels must have the same sample count.")
 
         self.data = data
         self.labels = labels
@@ -146,7 +147,7 @@ public class KNeighborsClassifier {
             }
         }
         
-        // Return class with highest weight.
+        // Returns class with highest weight.
         let resultSet = Raw.topKV2(kWeights, k: Tensor<Int32>(1), sorted: true)
         let classIndex = Int(resultSet.indices[0].scalarized())
         return kClasses[classIndex]
@@ -155,9 +156,9 @@ public class KNeighborsClassifier {
     /// Returns classification.
     ///
     /// - Parameter data: Prediction data with shape `[sample count, feature count]`.
-    /// - Returns: classification for test data.  
+    /// - Returns: Classification for test data.  
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
 
         var predictions = Tensor<Int32>(zeros: [data.shape[0]])
         for i in 0..<data.shape[0] {
@@ -166,17 +167,17 @@ public class KNeighborsClassifier {
         return predictions
     }
     
-    /// Returns Predict class labels for input samples.
+    /// Returns the mean accuracy.
     ///
     /// - Parameters
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target label with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given test data and labels.
     public func score(data: Tensor<Float>, labels: Tensor<Int32>) -> Float {
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(data.shape[0] == labels.shape[0],
-            "Data and labels must have same number of samples.")
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
-        precondition(labels.shape[0] > 0, "Labels must be non-empty.")
+            "Data and labels must have the same sample count.")
 
         let predictedLabels = self.prediction(for: data)
         var count: Int = 0
