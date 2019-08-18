@@ -20,7 +20,7 @@ public class PCA {
     /// The estimated noise covariance.
     public var noiseVariance: Tensor<Double>
     /// Principal axes in feature space, representing the directions of maximum variance in the
-    /// data.
+    /// data. The components are sorted by `explainedVariance`.
     public var components: Tensor<Double>
     /// The amount of variance explained by each of the selected components.
     public var explainedVariance: Tensor<Double>
@@ -64,7 +64,7 @@ public class PCA {
     ///   - sampleCount: The sample count.
     ///   - featureCount: The features count.
     /// - Returns: Log-likelihood of rank over given dataset.
-    func assessDimension(
+    internal func assessDimension(
         _ spectrum: Tensor<Double>,
         _ rank: Int,
         _ sampleCount: Int,
@@ -129,7 +129,7 @@ public class PCA {
     ///   - sampleCount: The sample count.
     ///   - featureCount: The feature count.
     /// - Returns: The number of components best describe the dataset.
-    func inferDimension(
+    internal func inferDimension(
         spectrum: Tensor<Double>,
         sampleCount: Int,
         featureCount: Int
