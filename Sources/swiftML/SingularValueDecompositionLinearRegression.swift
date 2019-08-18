@@ -1,10 +1,10 @@
 import TensorFlow
 
-/// Single value decomposition linear regression.
+/// Singular value decomposition linear regression.
 ///
 /// Reference: ["Use of the Singular Value Decomposition in Regression Analysis"](
 /// https://pdfs.semanticscholar.org/aef2/68c21be034bfd6228bf3946cb46e3c62cdb1.pdf)
-public class SingleValueDecompositionLinearRegression: LinearRegression {
+public class SingularValueDecompositionLinearRegression: LinearRegression {
     /// Whether to calculate the intercept for this model.
     public var fitIntercept: Bool
     /// The weights of the model.
