@@ -18,26 +18,26 @@ public class KMeans {
     public var labels: Tensor<Int32>
 
   
-    /// Creates a logistic regression model.
+    /// Creates a Kmeans cluster.
     ///
     /// - Parameters
     ///   - clusterCount: The number of clusters to form as well as the number of centroids to
     ///     generate, default to `2`.
     ///   - maximumIterationCount: Maximum number of iterations of the k-means algorithm to run,
     ///     default to `300`.
-    ///   - initializer: Select the initialization method for centroids. `kmean++`, `random`
-    ///     methods for initialization, default to `kmean++`.
+    ///   - initializer: Select the initialization method for centroids. `kmeans++`, `random`
+    ///     methods for initialization, default to `kmeans++`.
     ///   - seed: Used to initialize a pseudo-random number generator, default to `0`.
     public init(
         clusterCount: Int = 2,
         maximumIterationCount: Int = 300,
-        initializer: String = "kmean++",
+        initializer: String = "kmeans++",
         seed: Int64 = 0
     ) {
 
         precondition(clusterCount > 1, "Clusters count must be greater than one.")
         precondition(maximumIterationCount >= 0, "Maximum iteration count must be non-negative.")
-        precondition(initializer == "kmean++" || initializer == "random",
+        precondition(initializer == "kmeans++" || initializer == "random",
             "Intialializer must be `keman++` or `random`.")
         
         self.clusterCount = clusterCount
@@ -69,7 +69,7 @@ public class KMeans {
     /// http://ilpubs.stanford.edu:8090/778/1/2006-13.pdf)
     ///
     /// - Parameter data: Data with shape `[sample count, feature count]`.
-    internal func kmeanPlusPlus(_ data: Tensor<Float>) {
+    internal func kmeansPlusPlus(_ data: Tensor<Float>) {
         var distance = Tensor<Float>(zeros: [data.shape[0], 1])
         
         // Choose first center uniformly at random from among the data points.
@@ -119,7 +119,7 @@ public class KMeans {
         }
     }
     
-    /// Compute k-means clustering.
+    /// Fit a k-means cluster.
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Float>) {
@@ -129,8 +129,8 @@ public class KMeans {
         self.centroids = Tensor<Float>(zeros: [clusterCount, data.shape[1]])
         self.labels = Tensor<Int32>(zeros: [data.shape[0], 1])
         
-        if self.initializer == "kmean++" {
-            self.kmeanPlusPlus(data)
+        if self.initializer == "kmeans++" {
+            self.kmeansPlusPlus(data)
         } else if self.initializer == "random" {
             self.randomInitializer(data)
         }
@@ -186,7 +186,7 @@ public class KMeans {
     /// Returns the prediced cluster labels.
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
-    /// - Returns: Predicted prediction for input data.
+    /// - Returns: Prediction for input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must be non-empty.")
 
