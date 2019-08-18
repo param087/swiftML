@@ -38,7 +38,7 @@ extension LinearRegression {
     ///
     /// - Parameters
     ///   - data: Sample data with shape `[sample count, feature count]`.
-    ///   - labels: Target value with shape `[sample count, 1]`.
+    ///   - labels: Target value with shape `[sample count, target count]`.
     /// - Returns: The coefficient of determination (`R^2`) of the prediction.
     public func score(data: Tensor<Float>, labels: Tensor<Float>) -> Float {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")

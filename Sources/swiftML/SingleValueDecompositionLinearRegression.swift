@@ -26,12 +26,14 @@ public class SingleValueDecompositionLinearRegression: LinearRegression {
     ///
     /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
-    ///   - labels: Target value with shape `[sample count, 1]`.
+    ///   - labels: Target value with shape `[sample count, target count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
-        precondition(data.shape[1] >= 1, "Data must have feature count greater than one.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
-        precondition(labels.shape[1] == 1, "Labels must have single target feature.")
+        precondition(labels.shape[1] >= 1,
+            "Labels must have target feature count greater than or equal to one.")
         precondition(data.shape[0] == labels.shape[0],
             "Data and labels must have the same sample count.")
 
