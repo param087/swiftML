@@ -23,7 +23,7 @@ public class GaussianNB {
     /// - Parameters
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
-    public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
+    public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
         precondition(data.shape[0] == labels.shape[0], 
             "Data and labels must have same sample count.")
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -31,7 +31,6 @@ public class GaussianNB {
             "Data must have feature count greater than or equal to one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
-        let labels = Tensor<Int32>(labels)
         // find unique classes in target values.
         (self.classes, self.indices) = Raw.unique(labels.flattened())
         
@@ -105,7 +104,7 @@ public class GaussianNB {
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: prediction of input data.
-    public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
+    public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must be non-empty.")
 
         var labels = Tensor<Int32>(zeros: [data.shape[0]])
@@ -114,7 +113,7 @@ public class GaussianNB {
         for i in 0..<data.shape[0] {
             labels[i] = self.classes[Int(predLogProb[i].argmax().scalarized())]
         }
-        return Tensor<Float>(labels)
+        return labels
     }
 
     /// Returns mean accuracy on the given input data and labels.
@@ -123,7 +122,7 @@ public class GaussianNB {
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target label with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given input data and labels.
-    public func score(data: Tensor<Float>, labels: Tensor<Float>) -> Float {
+    public func score(data: Tensor<Float>, labels: Tensor<Int32>) -> Float {
         precondition(data.shape[0] == labels.shape[0],
             "Data and labels must have same sample count.")
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
