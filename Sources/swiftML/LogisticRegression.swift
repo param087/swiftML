@@ -15,19 +15,19 @@ public class LogisticRegression {
     var classes: Tensor<Int32>
     /// The tensor contains the index to unique classes.
     var indices: Tensor<Int32>
-    /// The weights array of the model contains weights of each class agains the rest.
+    /// The weights array for the model contains weights of each class agains the rest.
     public var weights = [Tensor<Float>]()
     
     /// Creates a logistic regression model.
     ///
-    /// - Parameters
-    ///   - iterationCount: The number of iterations for gradient descent, default to `0.1`.
-    ///   - learningRate: The learning rate for gardient descent, default to `1000`.
+    /// - Parameters.
+    ///   - iterationCount: The number of iterations for gradient descent, default to `1000`.
+    ///   - learningRate: The learning rate for gardient descent, default to `0.1`
     ///   - fitIntercept: Whether to calculate the intercept for this model. If set to `false`, no
     ///     intercept will be used in calculations, default set to `true`.
     public init(
-        learningRate: Float = 0.1,
         iterationCount: Int = 1000,
+        learningRate: Float = 0.1,
         fitIntercept: Bool = true
     ) {
         precondition(iterationCount > 0, "Iteration count must be positive.")
@@ -46,19 +46,20 @@ public class LogisticRegression {
     ///   - labels: Target value with shape `[sample count, 1]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
-        precondition(data.shape[1] >= 1, "Data must have feature count greater than one.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
         precondition(labels.shape[1] == 1, "Labels must have single target feature.")
         precondition(data.shape[0] == labels.shape[0],
             "Data and labels must have the same sample count.")
 
-        var modifiedData = data
+        var data = data
 
         if self.fitIntercept {
             let ones = Tensor<Float>(ones: [data.shape[0], 1])
-            modifiedData = ones.concatenated(with: data, alongAxis: -1)
+            data = ones.concatenated(with: data, alongAxis: -1)
         }
-        let numberOfSamples = Float(modifiedData.shape[0])
+        let sampleCount = Float(data.shape[0])
 
         (self.classes, self.indices) = Raw.unique(labels.flattened())
 
@@ -76,14 +77,14 @@ public class LogisticRegression {
             tempLabels = tempLabels.reshaped(to: [tempLabels.shape[0], 1])
     
             /// weights of selected class in one-vs-rests scheme.
-            var tempWeights = Tensor<Float>(ones: [modifiedData.shape[1], 1])
+            var tempWeights = Tensor<Float>(ones: [data.shape[1], 1])
 
             for _ in 0..<self.iterationCount {
-                let output = matmul(modifiedData, tempWeights)
+                let output = matmul(data, tempWeights)
                 let errors = tempLabels - sigmoid(output)
                 tempWeights = tempWeights +
-                    ((self.learningRate / numberOfSamples) *
-                        matmul(modifiedData.transposed(), errors))
+                    ((self.learningRate / sampleCount) *
+                        matmul(data.transposed(), errors))
             }
 
             self.weights.append(tempWeights)
@@ -115,17 +116,17 @@ public class LogisticRegression {
     /// - Parameter data: Smaple data with shape `[sample count, feature count]`.
     /// - Returns: Predicted class label of target values.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must be non-empty.")
 
-        var modifiedData = data
+        var data = data
         if self.fitIntercept {
             let ones = Tensor<Float>(ones: [data.shape[0], 1])
-            modifiedData = ones.concatenated(with: data, alongAxis: -1)
+            data = ones.concatenated(with: data, alongAxis: -1)
         }
         
-        var result = Tensor<Int32>(zeros: [modifiedData.shape[0], 1])
-        for i in 0..<modifiedData.shape[0] {
-            result[i] = self.predictSingleSample(modifiedData[i])
+        var result = Tensor<Int32>(zeros: [data.shape[0], 1])
+        for i in 0..<data.shape[0] {
+            result[i] = self.predictSingleSample(data[i])
         }
         return result
     }
