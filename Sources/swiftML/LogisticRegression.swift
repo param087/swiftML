@@ -5,7 +5,7 @@ import TensorFlow
 /// In the multiclass classification, the training algorithm uses the one-vs-rest (OvR)
 /// scheme.
 public class LogisticRegression {
-    ///  The linear rate for gradient descent.
+    /// The linear rate for gradient descent.
     var learningRate: Float
     /// The number of iterations for gradient descent.
     var iterationCount: Int
@@ -31,7 +31,7 @@ public class LogisticRegression {
         fitIntercept: Bool = true
     ) {
         precondition(iterationCount > 0, "Iteration count must be positive.")
-        precondition(learningRate >= 0, "Learning rate must be non-negative.")
+        precondition(learningRate > 0, "Learning rate must be positive.")
         self.learningRate = learningRate
         self.iterationCount = iterationCount
         self.fitIntercept = fitIntercept
@@ -116,7 +116,7 @@ public class LogisticRegression {
     /// - Parameter data: Smaple data with shape `[sample count, feature count]`.
     /// - Returns: Predicted class label of target values.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
 
         var data = data
         if self.fitIntercept {
