@@ -109,7 +109,6 @@ public class PCA {
                     / spectrumCopy[i]).scalarized()
                 pa = pa + Double(log( spectrumDiff * inverseSpectrumCopyDiff))
                     + Double(log(Float(sampleCount)))
-              
             }
         }
       
