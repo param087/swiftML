@@ -44,7 +44,7 @@ public class BernoulliNB {
             "Data must have feature count greater than or equal to one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
-        // find unique classes in target values.
+        // Find unique classes in target values.
         (self.classes, self.indices) = Raw.unique(labels.flattened())
 
         precondition(self.classes.shape[0] == 2, "Labels must have only two classes.")
@@ -122,7 +122,7 @@ public class BernoulliNB {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: classification of input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
          
         let predictLogProb = self.predictLogProba(data: data)
 

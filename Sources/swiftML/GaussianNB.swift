@@ -31,7 +31,7 @@ public class GaussianNB {
             "Data must have feature count greater than or equal to one.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
-        // find unique classes in target values.
+        // Find unique classes in target values.
         (self.classes, self.indices) = Raw.unique(labels.flattened())
         
         var separated = [[Tensor<Float>]]()
@@ -54,7 +54,7 @@ public class GaussianNB {
             let mean = classArray.mean(alongAxes: 0)
             let std = classArray.standardDeviation(alongAxes: 0)
             self.model[i] = mean.reshaped(to: [data.shape[1], 1])
-                .concatenated(with: std.reshaped(to: [data.shape[1], 1]), alongAxis: -1) 
+                .concatenated(with: std.reshaped(to: [data.shape[1], 1]), alongAxis: -1)
         }
     }
 
@@ -75,8 +75,8 @@ public class GaussianNB {
         let mean = Tensor<Double>(mean)
         let std = Tensor<Double>(std)
         let squaredDiff = pow((data - mean), 2)
-        let exponent = exp(-1.0 * ( squaredDiff / (2.0 * pow(std, 2))))
-        return Tensor<Float>(log(exponent / (pow(Tensor<Double>(2.0 * Double.pi) , 0.5) * std)))
+        let exponent = exp(-1.0 * (squaredDiff / (2.0 * pow(std, 2))))
+        return Tensor<Float>(log(exponent / (pow(Tensor<Double>(2.0 * Double.pi), 0.5) * std)))
     }
 
     /// Returns predict log probability.
@@ -84,7 +84,7 @@ public class GaussianNB {
     /// - Parameter data: Input data to predict log probability.
     /// - Return: predicted log probability.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float> {
-        var predictLogProb = Tensor<Float>(zeros:[data.shape[0], self.classes.shape[0]])
+        var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
  
         for i in 0..<data.shape[0] {
             for j in 0..<self.model.shape[0] {
@@ -105,7 +105,7 @@ public class GaussianNB {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: prediction of input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
 
         var labels = Tensor<Int32>(zeros: [data.shape[0]])
         let predLogProb = self.predictLogProba(data: data)
