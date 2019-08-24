@@ -47,7 +47,7 @@ extension LinearRegression {
             "Data and labels must have the same sample count.")
         
         let predictedLabels = self.prediction(for: data)
-        let u = pow((labels - predictedLabels),2).sum()
+        let u = pow((labels - predictedLabels), 2).sum()
         let v = pow((labels - labels.mean()), 2).sum()
         let score = (1 - (u/v))
         

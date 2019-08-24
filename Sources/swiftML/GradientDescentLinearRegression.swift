@@ -27,12 +27,11 @@ public class GradientDescentLinearRegression: LinearRegression {
         fitIntercept: Bool = true
     ) {
         precondition(iterationCount > 0, "Iteration count must be positive.")
-        precondition(learningRate >= 0, "Learning rate must be non-negative.")
+        precondition(learningRate > 0, "Learning rate must be positive.")
         self.iterationCount = iterationCount
         self.learningRate = learningRate
         self.fitIntercept = fitIntercept
         self.weights = Tensor<Float>(0)
-
     }
 
     /// Initialize weights between `[-1/N, 1/N]`.
