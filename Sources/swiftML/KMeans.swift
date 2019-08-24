@@ -17,7 +17,6 @@ public class KMeans {
     /// Predicted cluster for training data.
     public var labels: Tensor<Int32>
 
-  
     /// Creates a Kmeans cluster.
     ///
     /// - Parameters
@@ -34,11 +33,10 @@ public class KMeans {
         initializer: String = "kmeans++",
         seed: Int64 = 0
     ) {
-
         precondition(clusterCount > 1, "Clusters count must be greater than one.")
-        precondition(maximumIterationCount >= 0, "Maximum iteration count must be non-negative.")
+        precondition(maximumIterationCount > 0, "Maximum iteration count must be positive.")
         precondition(initializer == "kmeans++" || initializer == "random",
-            "Intialializer must be `keman++` or `random`.")
+            "Intialializer must be `kemans++` or `random`.")
         
         self.clusterCount = clusterCount
         self.maximumIterationCount = maximumIterationCount
@@ -79,7 +77,7 @@ public class KMeans {
         // For each data point `x`, compute `D(x)`, the distance between `x`and the nearest center
         // that has already been chosen.
         // Choose one new data point at random as a new center, using a weighted probability
-        // distribution where a point `x` is chosen with probability proportional to `D(x)`
+        // distribution where a point `x` is chosen with probability proportional to `D(x)`.
         for i in 1..<self.clusterCount {
 
             for dataIndex in 0..<data.shape[0] {
@@ -123,9 +121,11 @@ public class KMeans {
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Float>) {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
 
-        // reshape centroid of required shape based on input data and number of clusters.
+        // Reshape centroid of required shape based on input data and number of clusters.
         self.centroids = Tensor<Float>(zeros: [clusterCount, data.shape[1]])
         self.labels = Tensor<Int32>(zeros: [data.shape[0], 1])
         
@@ -188,7 +188,9 @@ public class KMeans {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Prediction for input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
 
         var labels = Tensor<Int32>(zeros: [data.shape[0], 1])
         for i in 0..<data.shape[0] {
@@ -202,7 +204,9 @@ public class KMeans {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Predicted prediction for input data.
     public func fitAndPrediction(for data: Tensor<Float>) -> Tensor<Int32> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
         
         self.fit(data: data)
         return self.prediction(for: data)
@@ -213,9 +217,11 @@ public class KMeans {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed input to a cluster-distance space.
     public func transformation(for data: Tensor<Float>) -> Tensor<Float> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        pprecondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
 
-        var transMat = Tensor<Float>(zeros:[data.shape[0], self.clusterCount])
+        var transMat = Tensor<Float>(zeros: [data.shape[0], self.clusterCount])
         
         for i in 0..<data.shape[0] {
             for j in 0..<self.clusterCount {
@@ -230,7 +236,9 @@ public class KMeans {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed data to a cluster-distance space.
     public func fitAndTransformation(for data: Tensor<Float>) -> Tensor<Float> {
-        precondition(data.shape[0] > 0, "Data must be non-empty.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[1] >= 1,
+            "Data must have feature count greater than or equal to one.")
 
         self.fit(data: data)
         return self.transformation(for: data)
