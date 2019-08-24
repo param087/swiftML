@@ -20,7 +20,7 @@ public class KNeighborsClassifier {
     /// - Parameters
     ///   - neighborCount: Number of neighbors to use, default to `5`.
     ///   - weights: Weight function used in prediction. Possible values `uniform` - uniform
-    ///     weighted, `distance` - weight point by inverse of their distance. default set to
+    ///     weighted, `distance` - weight point by inverse of their distance. Default set to
     ///     `distance`.
     ///   - p: The order of the norm of the difference: `||a - b||_p`, default set to `2`.
     public init(
@@ -67,8 +67,7 @@ public class KNeighborsClassifier {
         distances: Tensor<Float>,
         labels: Tensor<Float>
     ) -> Tensor<Float> {
-  
-        var labelsAndWeightsTensor = Tensor<Float>(zeros:[distances.shape[0], 2])
+        var labelsAndWeightsTensor = Tensor<Float>(zeros: [distances.shape[0], 2])
         
         // In `uniform` weighing method each class have same weight.
         // In `distance` weighing method weight vary based on the inverse of distance.

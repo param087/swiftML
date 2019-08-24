@@ -67,7 +67,7 @@ public class KNeighborsRegressor {
         distances: Tensor<Float>,
         labels: Tensor<Float>
     ) -> Tensor<Float> {
-        var weightsTensor = Tensor<Float>(zeros:[distances.shape[0]])
+        var weightsTensor = Tensor<Float>(zeros: [distances.shape[0]])
         var result = Tensor<Float>(0.0)
         
         // In `uniform` weighing method each class have same weight.
