@@ -217,7 +217,7 @@ public class KMeans {
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed input to a cluster-distance space.
     public func transformation(for data: Tensor<Float>) -> Tensor<Float> {
-        pprecondition(data.shape[0] > 0, "Data must have a positive sample count.")
+        precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         precondition(data.shape[1] >= 1,
             "Data must have feature count greater than or equal to one.")
 
