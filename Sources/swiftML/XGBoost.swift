@@ -1,4 +1,6 @@
 import Foundation
+import TensorFlow
+import Python
 
 public class XGBoost{
     
