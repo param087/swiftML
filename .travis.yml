@@ -1,0 +1,20 @@
+env:
+  global:
+  - SWIFT_BRANCH=tensorflow-0.4
+  # PACKAGE_VERSION will be used by travis to create the Github release tag
+  - PACKAGE_VERSION=0.0.1
+
+jobs:
+  include:
+  # The first stage will run all unit tests using Ubuntu
+  - stage: OSX test
+    os: osx
+    osx_image: xcode11
+    language: swift
+    sudo: required
+    install:
+    - wget https://storage.googleapis.com/swift-tensorflow-artifacts/releases/v0.4/rc2/swift-tensorflow-RELEASE-0.4-osx.pkg
+    - sudo installer -pkg swift-tensorflow-RELEASE-0.4-osx.pkg -target /
+    - export PATH="/Library/Developer/Toolchains/swift-tensorflow-RELEASE-0.4.xctoolchain/usr/bin:$PATH"
+    script:
+    - swift test
