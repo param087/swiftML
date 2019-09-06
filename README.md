@@ -1,6 +1,9 @@
 # swiftML
 
-Swift library for Machine Learning.
+Swift library for Machine Learning based on [Swift for TensorFlow](https://github.com/tensorflow/swift)
+
+
+
 
 ### Requirements
 
