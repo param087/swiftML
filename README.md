@@ -5,7 +5,7 @@ Swift library for Machine Learning based on [Swift for TensorFlow](https://githu
 
 
 
-### Requirements
+## Installation Instructions
 
  * [Swift for TensorFlow](https://github.com/tensorflow/swift)
  * [swift-jupyter](https://github.com/google/swift-jupyter)
