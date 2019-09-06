@@ -5,17 +5,26 @@ Swift library for Machine Learning based on [Swift for TensorFlow](https://githu
 
 
 
-## Installation Instructions
+## Getting Started
 
- * [Swift for TensorFlow](https://github.com/tensorflow/swift)
- * [swift-jupyter](https://github.com/google/swift-jupyter)
+ * **Install locally**: [Swift for TensorFlow](https://github.com/tensorflow/swift) and Jupyter Kernel for Swift for TensorFlow [swift-jupyter](https://github.com/google/swift-jupyter)
+ 
+ 
 
-### or
 
-* [Google Colaboratory](https://colab.research.google.com/github/tensorflow/swift/blob/master/notebooks/blank_swift.ipynb)
+* **Google Colaboratory**: The fastest way to get started is to try out right in your browser. Just open up a [tutorial](https://github.com/param087/swiftML/tree/master/Notebooks), or start from a [blank notebook](https://colab.research.google.com/github/tensorflow/swift/blob/master/notebooks/blank_swift.ipynb)!
 
----
-## %install directives
+
+### How to include the library in your package
+
+Add the library to your projects dependencies in the Package.swift file as shown below.
+```swift 
+dependencies: [
+        .package(url: https://github.com/param087/swiftML", .exact("0.0.2")),
+    ],
+```
+
+### How to include the library in your Jupyter Notebook using `%install` directives.
 
 `%install` directives let you install SwiftPM packages so that your notebook
 can import them:
@@ -23,8 +32,8 @@ can import them:
 ```swift
 
 // Install the swiftML package from GitHub.
-%install '.package(url: "https://github.com/param087/swiftML", from: "0.0.1")' swiftML
+%install '.package(url: "https://github.com/param087/swiftML", from: "0.0.2")' swiftML
 
 // Install the swiftML package that's in the local directory.
-%install '.package(path: "path to swiftML")' swiftML
+%install '.package(path: "$cwd/swiftML")' swiftML
 ```
