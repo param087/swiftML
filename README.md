@@ -20,7 +20,7 @@ Swift library for Machine Learning based on [Swift for TensorFlow](https://githu
 Add the library to your projects dependencies in the Package.swift file as shown below.
 ```swift 
 dependencies: [
-        .package(url: https://github.com/param087/swiftML", .exact("0.0.2")),
+        .package(url: "https://github.com/param087/swiftML", .exact("0.0.2")),
     ],
 ```
 
