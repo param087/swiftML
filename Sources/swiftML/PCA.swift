@@ -145,7 +145,8 @@ public class PCA {
   
     /// Fit a Principal Component Analysis.
     ///
-    /// - Parameter data: Training data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Training data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Double>) {
         self.sampleCount = data.shape.dimensions[0]
         self.featureCount = data.shape.dimensions[1]
@@ -199,7 +200,8 @@ public class PCA {
 
     /// Returns dimensionally reduced data.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Dimensionally reduced data.
     public func transformation(for data: Tensor<Double>) -> Tensor<Double> {
         var transformedData = matmul((data - self.mean), self.components.transposed())
@@ -213,7 +215,8 @@ public class PCA {
 
     /// Returns transform data to its original space.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Original data whose transform would be data.
     public func inverseTransformation(for data: Tensor<Double>) -> Tensor<Double> {
         if self.whiten {

@@ -20,7 +20,8 @@ public protocol LinearRegression {
 extension LinearRegression {
     /// Returns prediction using linear model.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Predicted output.
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -36,7 +37,7 @@ extension LinearRegression {
 
     /// Returns the coefficient of determination (`R^2`) of the prediction.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count, target count]`.
     /// - Returns: The coefficient of determination (`R^2`) of the prediction.

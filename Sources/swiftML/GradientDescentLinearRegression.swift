@@ -35,7 +35,8 @@ public class GradientDescentLinearRegression: LinearRegression {
     }
 
     /// Initialize weights between `[-1/N, 1/N]`.
-    /// - Parameter featuresCount: The number of features in training data.
+    /// - Parameters:
+    ///   - featuresCount: The number of features in training data.
     internal func initializeWeights(featuresCount: Int) {
         // Randomly initialize weights.
         var w = Tensor<Float>(zeros: [featuresCount, 1])

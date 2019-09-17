@@ -15,8 +15,8 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 /// Returns deterministic SVD contains sign-corrected versions of left singular vectors and right
 /// singular vectors from input matrix.
 ///
-/// Reference: ["Determinitic SVD"](https://github.com/scikit-learn/
-/// scikit-learn/blob/53f76d1a24ef42eb8c620fc1116c53db11dd07d9/sklearn/utils/extmath.py#L482)
+/// Reference: ["Determinitic SVD"](
+/// https://github.com/scikit-learn/scikit-learn/blob/53f76d1a24ef42eb8c620fc1116c53db11dd07d9/sklearn/utils/extmath.py#L482)
 ///
 /// - Parameters:
 ///   - input: The input matrix.

@@ -8,7 +8,7 @@ public class KNeighborsRegressor {
     /// The order of the norm of the difference: `||a - b||_p`.
     var p: Int
     /// Weight function used in prediction.
-    var weights: String
+    public var weights: String
     /// Number of neighbors.
     var neighborCount: Int
     /// The training data.
@@ -18,7 +18,7 @@ public class KNeighborsRegressor {
   
     /// Create a K neighbors regressor model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - neighborCount: Number of neighbors to use, default to `5`.
     ///   - weights: Weight function used in prediction. Possible values `uniform` - uniform
     ///     weighted, `distance` - weight point by inverse of their distance. Default set to
@@ -43,7 +43,7 @@ public class KNeighborsRegressor {
   
     /// Fit a K-neighbors regressor model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Float>) {
@@ -60,7 +60,7 @@ public class KNeighborsRegressor {
   
     /// Returns the average value of target.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - distances: Contains the distance between test data and top neighbors.
     ///   - labels: Contains the value of target.
     internal func computeWeights(
@@ -92,7 +92,8 @@ public class KNeighborsRegressor {
 
     /// Returns the individual predicted value.
     ///
-    /// - Parameter data: Input data to be regressed.
+    /// - Parameters:
+    ///   - data: Input data to be regressed.
     /// - Returns: Predicted target value.
     internal func predictSingleSample(_ test: Tensor<Float>) -> Tensor<Float> {
         var distances = Tensor<Float>(zeros: [self.data.shape[0]])
@@ -129,7 +130,8 @@ public class KNeighborsRegressor {
   
     /// Returns predicted values.
     ///
-    /// - Parameter data: Test data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Test data with shape `[sample count, feature count]`.
     /// - Returns: Predicted value tensor.
     public func prediction(for data: Tensor<Float>) -> Tensor<Float> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -143,7 +145,7 @@ public class KNeighborsRegressor {
   
     /// Returns the coefficient of determination (`R^2`) of the prediction.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target values with shape `[sample count]`.
     /// - Returns: The coefficient of determination (`R^2`) of the prediction.
