@@ -3,11 +3,14 @@
 Swift library for Machine Learning based on [Swift for TensorFlow](https://github.com/tensorflow/swift) Project.
 
 
+## Documentation
+ [https://param087.github.io/swiftML/](https://param087.github.io/swiftML/ )
+
 
 
 ## Getting Started
 
- * **Install locally**: [Swift for TensorFlow](https://github.com/tensorflow/swift) and Jupyter Kernel for Swift for TensorFlow [swift-jupyter](https://github.com/google/swift-jupyter)
+ * **Install locally**: [Swift for TensorFlow toolchain](https://github.com/tensorflow/swift/blob/master/Installation.md) and Jupyter Kernel for Swift for TensorFlow [swift-jupyter](https://github.com/google/swift-jupyter).
  
  
 
@@ -37,3 +40,8 @@ can import them:
 // Install the swiftML package that's in the local directory.
 %install '.package(path: "$cwd/swiftML")' swiftML
 ```
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
