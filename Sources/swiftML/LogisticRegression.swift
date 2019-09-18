@@ -20,7 +20,7 @@ public class LogisticRegression {
     
     /// Creates a logistic regression model.
     ///
-    /// - Parameters.
+    /// - Parameters:
     ///   - iterationCount: The number of iterations for gradient descent, default to `1000`.
     ///   - learningRate: The learning rate for gardient descent, default to `0.1`
     ///   - fitIntercept: Whether to calculate the intercept for this model. If set to `false`, no
@@ -41,7 +41,7 @@ public class LogisticRegression {
     
     /// Fit a logistic regression model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count, 1]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
@@ -91,9 +91,10 @@ public class LogisticRegression {
         }
     }
     
-    /// Return the prediction for a single sample.
+    /// Returns the prediction for a single sample.
     ///
-    /// - Parameters data: Single sample data with shape `[1, feature count]`.
+    /// - Parameters:
+    ///   - data: Single sample data with shape `[1, feature count]`.
     /// - Returns: Predicted class label.
     public func predictSingleSample(_ data: Tensor<Float>) -> Tensor<Int32> {
         var output = Tensor<Float>(zeros: [weights.count, 1])
@@ -113,7 +114,8 @@ public class LogisticRegression {
     
     /// Returns prediction using logistic regression classifier.
     ///
-    /// - Parameter data: Smaple data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Smaple data with shape `[sample count, feature count]`.
     /// - Returns: Predicted class label of target values.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -133,10 +135,10 @@ public class LogisticRegression {
 
     /// Returns mean accuracy on the given test data and labels.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count].
     ///   - labels: Target label with shape `[sample count, 1]`.
-    /// - Returns: Returns the mean accuracy on the given test data 1and labels.
+    /// - Returns: Returns the mean accuracy on the given test data and labels.
     public func score(data: Tensor<Float>, labels: Tensor<Int32>) -> Float {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")

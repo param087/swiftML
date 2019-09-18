@@ -20,7 +20,7 @@ public class GaussianNB {
 
     /// Fit a Gaussian naive bayes classifier model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
@@ -60,7 +60,7 @@ public class GaussianNB {
 
     /// Returns a log of gaussian distribution.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Input data to find gausssian distribution.
     ///   - mean: Mean of input tensor.
     ///   - std: Standard deviation of input data.
@@ -81,8 +81,9 @@ public class GaussianNB {
 
     /// Returns predict log probability.
     ///
-    /// - Parameter data: Input data to predict log probability.
-    /// - Return: predicted log probability.
+    /// - Parameters:
+    ///   - data: Input data to predict log probability.
+    /// - Returns: predicted log probability.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float> {
         var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
  
@@ -102,7 +103,8 @@ public class GaussianNB {
   
     /// Returns classification.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: prediction of input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -118,7 +120,7 @@ public class GaussianNB {
 
     /// Returns mean accuracy on the given input data and labels.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target label with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given input data and labels.

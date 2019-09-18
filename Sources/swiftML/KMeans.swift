@@ -19,7 +19,7 @@ public class KMeans {
 
     /// Creates a Kmeans cluster.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - clusterCount: The number of clusters to form as well as the number of centroids to
     ///     generate, default to `2`.
     ///   - maximumIterationCount: Maximum number of iterations of the k-means algorithm to run,
@@ -47,9 +47,9 @@ public class KMeans {
         self.labels = Tensor<Int32>([0])
     }
   
-    /// Return the index of centroid having minimum euclidean distance with data.
+    /// Returns the index of centroid having minimum euclidean distance with data.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - centroids: Centroids with shape `[1, feature count]`.
     ///   - data: Data tensor of shape `[sample count, feature count]`.
     /// - Returns: Index of minimum euclidean distance centroid.
@@ -66,7 +66,8 @@ public class KMeans {
     /// Reference: ["k-means++: The Advantages of Careful Seeding"](
     /// http://ilpubs.stanford.edu:8090/778/1/2006-13.pdf)
     ///
-    /// - Parameter data: Data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Data with shape `[sample count, feature count]`.
     internal func kmeansPlusPlus(_ data: Tensor<Float>) {
         var distance = Tensor<Float>(zeros: [data.shape[0], 1])
         
@@ -108,7 +109,8 @@ public class KMeans {
     
     /// Random Initialization of centroids.
     ///
-    /// - Parameter data: Data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Data with shape `[sample count, feature count]`.
     internal func randomInitializer(_ data: Tensor<Float>) {
         // shuffle the input data.
         let shuffled = Raw.randomShuffle(value: data, seed: self.seed)
@@ -119,7 +121,8 @@ public class KMeans {
     
     /// Fit a k-means cluster.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     public func fit(data: Tensor<Float>) {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
         precondition(data.shape[1] >= 1,
@@ -185,7 +188,8 @@ public class KMeans {
   
     /// Returns the prediced cluster labels.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Prediction for input data.
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -201,7 +205,8 @@ public class KMeans {
   
     /// Returns fit and prediced cluster labels.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Predicted prediction for input data.
     public func fitAndPrediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -214,7 +219,8 @@ public class KMeans {
     
     /// Returns Transform input to a cluster-distance space.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed input to a cluster-distance space.
     public func transformation(for data: Tensor<Float>) -> Tensor<Float> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -233,7 +239,8 @@ public class KMeans {
 
     /// Returns fit and Transform input to a cluster-distance space.
     ///
-    /// - Parameter data: Input data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Input data with shape `[sample count, feature count]`.
     /// - Returns: Transformed data to a cluster-distance space.
     public func fitAndTransformation(for data: Tensor<Float>) -> Tensor<Float> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
