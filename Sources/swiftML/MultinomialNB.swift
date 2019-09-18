@@ -33,7 +33,7 @@ public class MultinomialNB {
   
     /// Fit a multinomial naive bayes classifier model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target values with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
@@ -103,6 +103,7 @@ public class MultinomialNB {
     /// Returns log-probability estimates for the test data.
     ///
     /// - Parameter data: Test data with shape `[sample count, feature count]`.
+    /// - Returns: log-probability estimates for the test data.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float>{
         var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
 
@@ -133,7 +134,7 @@ public class MultinomialNB {
 
     /// Returns mean accuracy on the given test data and labels.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target values with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given test data and labels.

@@ -33,7 +33,7 @@ public class BernoulliNB {
   
     /// Fit a bernoulli naive bayes classifier model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
@@ -105,7 +105,7 @@ public class BernoulliNB {
     /// Returns log-probability estimates for the input data.
     ///
     /// - Parameter data: Input data with shape `[sample count, feature count]`.
-    /// - Returns- log-probability estimates for the input data.
+    /// - Returns: log-probability estimates for the input data.
     public func predictLogProba(data: Tensor<Float>) -> Tensor<Float> {
         var predictLogProb = Tensor<Float>(zeros: [data.shape[0], self.classes.shape[0]])
         
@@ -135,7 +135,7 @@ public class BernoulliNB {
 
     /// Returns mean accuracy on the given input data and labels.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target label with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given input data and labels.

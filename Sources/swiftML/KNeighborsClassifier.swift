@@ -7,7 +7,7 @@ public class KNeighborsClassifier {
     /// The order of the norm of the difference: `||a - b||_p`.
     var p: Int
     /// Weight function used in prediction.
-    var weights: String
+    public var weights: String
     /// Number of neighbors.
     var neighborCount: Int
     /// The training data.
@@ -17,7 +17,7 @@ public class KNeighborsClassifier {
   
     /// Create a K neighbors classifier model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - neighborCount: Number of neighbors to use, default to `5`.
     ///   - weights: Weight function used in prediction. Possible values `uniform` - uniform
     ///     weighted, `distance` - weight point by inverse of their distance. Default set to
@@ -42,7 +42,7 @@ public class KNeighborsClassifier {
   
     /// Fit a K-neighbors classifier model.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Training data with shape `[sample count, feature count]`.
     ///   - labels: Target value with shape `[sample count]`.
     public func fit(data: Tensor<Float>, labels: Tensor<Int32>) {
@@ -59,7 +59,7 @@ public class KNeighborsClassifier {
 
     /// Returns the weights of each neighbor.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - distances: Contains the distance between test data and top neighbors.
     ///   - labels: Contains the classes of neighbors.
     /// - Returns - The weights of each neighbors.
@@ -95,7 +95,8 @@ public class KNeighborsClassifier {
 
     /// Returns the predicted classification.
     ///
-    /// - Parameter test: Input data to be classified.
+    /// - Parameters:
+    ///   - test: Input data to be classified.
     /// - Returns: Predicted classification.
     internal func predictSingleSample(_ test: Tensor<Float>) -> Tensor<Int32> {
         var distances = Tensor<Float>(zeros: [self.data.shape[0]])
@@ -154,7 +155,8 @@ public class KNeighborsClassifier {
 
     /// Returns classification.
     ///
-    /// - Parameter data: Prediction data with shape `[sample count, feature count]`.
+    /// - Parameters:
+    ///   - data: Prediction data with shape `[sample count, feature count]`.
     /// - Returns: Classification for test data.  
     public func prediction(for data: Tensor<Float>) -> Tensor<Int32> {
         precondition(data.shape[0] > 0, "Data must have a positive sample count.")
@@ -168,7 +170,7 @@ public class KNeighborsClassifier {
     
     /// Returns the mean accuracy.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: Sample data with shape `[sample count, feature count]`.
     ///   - labels: Target label with shape `[sample count]`.
     /// - Returns: Returns the mean accuracy on the given test data and labels.
