@@ -97,9 +97,9 @@ public class KNeighborsRegressor {
     /// - Returns: Predicted target value.
     internal func predictSingleSample(_ test: Tensor<Float>) -> Tensor<Float> {
         var distances = Tensor<Float>(zeros: [self.data.shape[0]])
-        var maxLabel = Tensor<Float>(zeros: [self.neighborCount])
-        var maxDistances: Tensor<Float>
-        var maxIndex: Tensor<Int32>
+        var minDistanceLabels = Tensor<Float>(zeros: [self.neighborCount])
+        var minDistances: Tensor<Float>
+        var minDistanceIndex: Tensor<Int32>
         
         // Calculate the distance between test and all data points.
         for i in 0..<self.data.shape[0] {
@@ -107,24 +107,24 @@ public class KNeighborsRegressor {
         }
         
         // Find the top neighbors with minimum distance.
-        (maxDistances, maxIndex) =
+        (minDistances, minDistanceIndex) =
             Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
-        maxDistances = Raw.reverse(maxDistances, dims: Tensor<Bool>([true]))
-        maxDistances = maxDistances
+        minDistances = Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
+        minDistances = minDistances
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
-        maxIndex = Raw.reverse(maxIndex, dims: Tensor<Bool>([true]))
-        maxIndex = maxIndex
+        minDistanceIndex = Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
+        minDistanceIndex = minDistanceIndex
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
         for i in 0..<self.neighborCount {
-            maxLabel[i] = self.labels[Int(maxIndex[i].scalarized())]
+            minDistanceLabels[i] = self.labels[Int(minDistanceIndex[i].scalarized())]
         }
 
         // Average weight based on neighbors weights.
-        let avgWeight = computeWeights(distances: maxDistances, labels: maxLabel)
+        let avgWeight = computeWeights(distances: minDistances, labels: minDistanceLabels)
         return avgWeight
     }
   

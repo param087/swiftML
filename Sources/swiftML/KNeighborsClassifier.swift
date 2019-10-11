@@ -100,9 +100,9 @@ public class KNeighborsClassifier {
     /// - Returns: Predicted classification.
     internal func predictSingleSample(_ test: Tensor<Float>) -> Tensor<Int32> {
         var distances = Tensor<Float>(zeros: [self.data.shape[0]])
-        var maxLabel = Tensor<Int32>(zeros: [self.neighborCount])
-        var maxDistances: Tensor<Float>
-        var maxIndex: Tensor<Int32>
+        var minDistanceLabels = Tensor<Int32>(zeros: [self.neighborCount])
+        var minDistances: Tensor<Float>
+        var minDistanceIndex: Tensor<Int32>
         var classes: Tensor<Int32>
         var indices: Tensor<Int32>
       
@@ -112,27 +112,27 @@ public class KNeighborsClassifier {
         }
 
         // Find the top neighbor with minimum distance.
-        (maxDistances, maxIndex) =
+        (minDistances, minDistanceIndex) =
             Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
-        maxDistances = Raw.reverse(maxDistances, dims: Tensor<Bool>([true]))
-        maxDistances = maxDistances
+        minDistances = Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
+        minDistances = minDistances
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
-        maxIndex = Raw.reverse(maxIndex, dims: Tensor<Bool>([true]))
-        maxIndex = maxIndex
+        minDistanceIndex = Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
+        minDistanceIndex = minDistanceIndex
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
         for i in 0..<self.neighborCount {
-            maxLabel[i] = self.labels[Int(maxIndex[i].scalarized())]
+            minDistanceLabels[i] = self.labels[Int(minDistanceIndex[i].scalarized())]
         }
 
         // Weights the neighbors based on their weighing method.
         let labelsAndWeightsTensor = computeWeights(
-            distances: maxDistances, labels: Tensor<Float>(maxLabel))
+            distances: minDistances, labels: Tensor<Float>(minDistanceLabels))
 
-        (classes, indices) = Raw.unique(Tensor<Int32>(maxLabel))
+        (classes, indices) = Raw.unique(Tensor<Int32>(minDistanceLabels))
         
         var kClasses = Tensor<Int32>(zeros: [classes.shape[0]])
         var kWeights = Tensor<Float>(zeros: [classes.shape[0]])
