@@ -47,8 +47,6 @@ public class BernoulliNB {
         // Find unique classes in target values.
         (self.classes, self.indices) = Raw.unique(labels.flattened())
 
-        precondition(self.classes.shape[0] == 2, "Labels must have only two classes.")
-
         // Initialize the classLogPrior and featureLogProb based on feature count and sample count.
         var separated = [[Tensor<Float>]]()
         self.classLogPrior = Tensor<Float>(zeros: [self.classes.shape[0]])
