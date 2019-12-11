@@ -43,8 +43,8 @@ public class SingularValueDecompositionLinearRegression: LinearRegression {
             data = ones.concatenated(with: data, alongAxis: -1)
         }   
 
-        let svd = Raw.svd(matmul(data.transposed(), data))
-        let s = Raw.diag(diagonal: svd.s)
+        let svd = _Raw.svd(matmul(data.transposed(), data))
+        let s = _Raw.diag(diagonal: svd.s)
         let dataSqRegInv = matmul(matmul(svd.v, s.pseudoinverse), svd.u.transposed())
         self.weights = matmul(matmul(dataSqRegInv, data.transposed()), labels)
     }

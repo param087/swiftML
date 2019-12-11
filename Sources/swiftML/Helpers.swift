@@ -6,9 +6,9 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     /// Reference: ["Moore–Penrose inverse"](
     /// https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse)
     public var pseudoinverse: Tensor {
-        let svd = Raw.svd(self)
-        let diag = Raw.diag(diagonal: svd.s)
-        return matmul(matmul(svd.v, Raw.matrixInverse(diag)), svd.u.transposed())
+        let svd = _Raw.svd(self)
+        let diag = _Raw.diag(diagonal: svd.s)
+        return matmul(matmul(svd.v, _Raw.matrixInverse(diag)), svd.u.transposed())
     }
 }
 
@@ -28,7 +28,7 @@ public func deterministicSvd<T: FloatingPoint & TensorFlowScalar>(
     _ input: Tensor<T>,
     columnBasedSignFlipping: Bool = true
 ) -> (s: Tensor<T>, u: Tensor<T>, v: Tensor<T>) {
-    var (s, u, v) = Raw.svd(input)
+    var (s, u, v) = _Raw.svd(input)
     v = v.transposed()
 
     let signs: Tensor<T>
@@ -39,14 +39,14 @@ public func deterministicSvd<T: FloatingPoint & TensorFlowScalar>(
         for i in 0..<u.shape[1] {
             colValueForSign[i] = u[Int(maxAbsCols[i].scalarized()), i]
         }
-        signs = Raw.sign(colValueForSign)
+        signs = _Raw.sign(colValueForSign)
     } else {
         let maxAbsRows = abs(v).argmax(squeezingAxis: 1)
         var rowValueForSign = Tensor<T>(zeros: [u.shape[0]])
         for i in 0..<u.shape[0] {
             rowValueForSign[i] = v[i, Int(maxAbsRows[i].scalarized())]
         }
-        signs = Raw.sign(rowValueForSign)
+        signs = _Raw.sign(rowValueForSign)
     }
     return (s, u * signs, v * signs.reshaped(to: [u.shape[1], 1]))
 }
