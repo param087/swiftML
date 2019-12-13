@@ -113,13 +113,13 @@ public class KNeighborsClassifier {
 
         // Find the top neighbor with minimum distance.
         (minDistances, minDistanceIndex) =
-            Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
-        minDistances = Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
+            _Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
+        minDistances = _Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
         minDistances = minDistances
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
-        minDistanceIndex = Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
+        minDistanceIndex = _Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
         minDistanceIndex = minDistanceIndex
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
@@ -132,7 +132,7 @@ public class KNeighborsClassifier {
         let labelsAndWeightsTensor = computeWeights(
             distances: minDistances, labels: Tensor<Float>(minDistanceLabels))
 
-        (classes, indices) = Raw.unique(Tensor<Int32>(minDistanceLabels))
+        (classes, indices) = _Raw.unique(Tensor<Int32>(minDistanceLabels))
         
         var kClasses = Tensor<Int32>(zeros: [classes.shape[0]])
         var kWeights = Tensor<Float>(zeros: [classes.shape[0]])
@@ -148,7 +148,7 @@ public class KNeighborsClassifier {
         }
         
         // Returns class with highest weight.
-        let resultSet = Raw.topKV2(kWeights, k: Tensor<Int32>(1), sorted: true)
+        let resultSet = _Raw.topKV2(kWeights, k: Tensor<Int32>(1), sorted: true)
         let classIndex = Int(resultSet.indices[0].scalarized())
         return kClasses[classIndex]
     }

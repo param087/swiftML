@@ -73,7 +73,7 @@ public class PCA {
         var pu = -Double(rank) * Double(log(2.0))
         
         for i in 0..<rank {
-            let logGamma = Raw.lgamma(Tensor<Double>(Double(featureCount - i) / 2.0)).scalarized()
+            let logGamma = _Raw.lgamma(Tensor<Double>(Double(featureCount - i) / 2.0)).scalarized()
             pu = pu + (logGamma - Double(log(Float.pi)) * Double(featureCount - i) / 2.0)
         }
       

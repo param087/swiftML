@@ -91,13 +91,13 @@ public class KMeans {
             }
 
             let probability = distance / distance.sum()
-            let cumsum = Raw.cumsum(probability.flattened(), axis: Tensor<Int32>(-1))
+            let cumsum = _Raw.cumsum(probability.flattened(), axis: Tensor<Int32>(-1))
             let threshold = Tensor<Float>(Float.random(in: 0...1))
 
             var index: Int = 0
 
             for j in 0..<cumsum.shape[0] {
-                if cumsum[j] >= threshold {
+                if cumsum[j].scalarized() >= threshold.scalarized() {
                     break
                 } else {
                     index = index + 1
@@ -113,7 +113,7 @@ public class KMeans {
     ///   - data: Data with shape `[sample count, feature count]`.
     internal func randomInitializer(_ data: Tensor<Float>) {
         // shuffle the input data.
-        let shuffled = Raw.randomShuffle(value: data, seed: self.seed)
+        let shuffled = _Raw.randomShuffle(value: data, seed: self.seed)
         for i in 0..<clusterCount {
             self.centroids[i] = shuffled[i]
         }
