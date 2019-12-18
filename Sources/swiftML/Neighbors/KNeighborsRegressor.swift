@@ -108,13 +108,13 @@ public class KNeighborsRegressor {
         
         // Find the top neighbors with minimum distance.
         (minDistances, minDistanceIndex) =
-            Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
-        minDistances = Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
+            _Raw.topKV2(distances, k: Tensor<Int32>(Int32(data.shape[0])), sorted: true)
+        minDistances = _Raw.reverse(minDistances, dims: Tensor<Bool>([true]))
         minDistances = minDistances
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))
 
-        minDistanceIndex = Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
+        minDistanceIndex = _Raw.reverse(minDistanceIndex, dims: Tensor<Bool>([true]))
         minDistanceIndex = minDistanceIndex
             .slice(lowerBounds: Tensor<Int32>([0]),
                 sizes: Tensor<Int32>([Int32(self.neighborCount)]))

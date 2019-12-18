@@ -32,7 +32,7 @@ public class GaussianNB {
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
         // Find unique classes in target values.
-        (self.classes, self.indices) = Raw.unique(labels.flattened())
+        (self.classes, self.indices) = _Raw.unique(labels.flattened())
         
         var separated = [[Tensor<Float>]]()
         self.model = Tensor<Float>(zeros: [self.classes.shape[0], data.shape[1], 2])

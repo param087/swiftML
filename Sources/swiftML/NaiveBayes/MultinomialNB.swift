@@ -45,7 +45,7 @@ public class MultinomialNB {
         precondition(labels.shape[0] > 0, "Labels must have a positive sample count.")
 
         // find unique classes in target values.
-        (self.classes, self.indices) = Raw.unique(labels.flattened())
+        (self.classes, self.indices) = _Raw.unique(labels.flattened())
         
         precondition(self.classes.shape[0] > 1, "Labels must have more than one class.")
 

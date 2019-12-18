@@ -61,19 +61,19 @@ public class LogisticRegression {
         }
         let sampleCount = Float(data.shape[0])
 
-        (self.classes, self.indices) = Raw.unique(labels.flattened())
+        (self.classes, self.indices) = _Raw.unique(labels.flattened())
 
         precondition(self.classes.shape[0] >= 2, "Labels must have atleast two classes")
         
         /// Loop through each class and apply one-vs-rest (OvR) scheme. 
         for i in 0..<self.classes.shape[0] {
-            let condition = Raw.equal(labels, classes[i])
+            let condition = _Raw.equal(labels, classes[i])
             let t = Tensor<Int32>(ones: [labels.shape[0], 1])
             let e = Tensor<Int32>(zeros: [labels.shape[0], 1])
 
             /// Create temparary labels for one-vs-rest scheme, based on class the selected class
             /// labeled as `1` while rest as `0`.
-            var tempLabels = Tensor<Float>(Raw.select(condition: condition, t: t, e: e))
+            var tempLabels = Tensor<Float>(_Raw.select(condition: condition, t: t, e: e))
             tempLabels = tempLabels.reshaped(to: [tempLabels.shape[0], 1])
     
             /// weights of selected class in one-vs-rests scheme.

@@ -44,7 +44,7 @@ public class LeastSquaresLinearRegression: LinearRegression {
         }   
 
         // weights = (X^T.X)^-1.X^T.y
-        self.weights = matmul(matmul(Raw.matrixInverse(matmul(data.transposed(), data)),
+        self.weights = matmul(matmul(_Raw.matrixInverse(matmul(data.transposed(), data)),
             data.transposed()), labels)
     }
 }
