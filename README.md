@@ -41,7 +41,14 @@ can import them:
 %install '.package(path: "$cwd/swiftML")' swiftML
 ```
 
+## Contributing
+
+We welcome contribution from everyone. Read the [contribution guide](https://github.com/param087/CONTRIBUTION.md) for information on of how to get started.
+
+## Community
+
+swiftML discussions happen on the [Slack](https://join.slack.com/t/swiftml/shared_invite/enQtODgwMjEzOTIxOTkwLWMzYzlmZTQwNjJkNzBiNzNhZGZmN2FhZjBlNDgxNjVjMDkxNDRlM2UxYmMzMmE4ZTMzZmE0ODIxZGQ2NzdiYWI).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
