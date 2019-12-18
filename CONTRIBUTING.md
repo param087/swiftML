@@ -18,7 +18,9 @@ If you want to work on an open issue, please post a comment telling that you wil
 Before sending your pull request for [review](https://github.com/param087/swiftML/pulls), make sure your changes are consistent with the guidelines.
 
 ### Testing
-* Include unit tests when you contribute new features, as they help to a) prove that your code works correctly, and b) guard against future breaking changes to lower the maintenance cost.
+* Include unit tests when you contribute new features, as they help to
+    * Prove that your code works correctly.
+    * Guard against future breaking changes to lower the maintenance cost.
 * Bug fixes also generally require unit tests, because the presence of bugs usually indicates insufficient test coverage.
 
 ### Swift coding style
