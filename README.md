@@ -43,7 +43,7 @@ can import them:
 
 ## Contributing
 
-We welcome contribution from everyone. Read the [contribution guide](https://github.com/param087/CONTRIBUTION.md) for information on of how to get started.
+We welcome contribution from everyone. Read the [contribution guide](https://github.com/param087/blob/master/CONTRIBUTION.md) for information on of how to get started.
 
 ## Community
 
