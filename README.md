@@ -37,6 +37,10 @@ can import them:
 // Install the swiftML package from GitHub.
 %install '.package(url: "https://github.com/param087/swiftML", from: "0.0.4")' swiftML
 
+// Install the swiftML package from GitHub master branch.
+%install '.package(url: "https://github.com/param087/swiftML", .branch("master"))' swiftML
+
+
 // Install the swiftML package that's in the local directory.
 %install '.package(path: "$cwd/swiftML")' swiftML
 ```
