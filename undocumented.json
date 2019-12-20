@@ -1,0 +1,173 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/AdaBoostClassifier.swift",
+      "line": 11,
+      "symbol": "AdaBoostClassifier",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/GradientBoostRegressor.swift",
+      "line": 11,
+      "symbol": "GradientBoostRegressor",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 11,
+      "symbol": "RandomForest",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 13,
+      "symbol": "RandomForest.forest",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 14,
+      "symbol": "RandomForest.fullData",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 15,
+      "symbol": "RandomForest.target",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 16,
+      "symbol": "RandomForest.nTrees",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 17,
+      "symbol": "RandomForest.nFeatures",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 18,
+      "symbol": "RandomForest.depth",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 19,
+      "symbol": "RandomForest.perform",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 20,
+      "symbol": "RandomForest.using",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 21,
+      "symbol": "RandomForest.tolerance",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 172,
+      "symbol": "RandomTree",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 639,
+      "symbol": "RandomDataSet",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 870,
+      "symbol": "RandomFeature",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 872,
+      "symbol": "RandomFeature.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 873,
+      "symbol": "RandomFeature.values",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 874,
+      "symbol": "RandomFeature.entropy",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Ensemble/RandomForest.swift",
+      "line": 875,
+      "symbol": "RandomFeature.giniImpurity",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Tree/DecisionTree.swift",
+      "line": 11,
+      "symbol": "DecisionTree",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Tree/DecisionTree.swift",
+      "line": 550,
+      "symbol": "Node",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Tree/DecisionTree.swift",
+      "line": 621,
+      "symbol": "DataSet",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Tree/DecisionTree.swift",
+      "line": 845,
+      "symbol": "Feature",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/travis/build/param087/swiftML/Sources/swiftML/Tree/DecisionTree.swift",
+      "line": 1072,
+      "symbol": "FeatureValue",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/travis/build/param087/swiftML"
+}
