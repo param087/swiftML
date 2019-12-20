@@ -37,11 +37,22 @@ can import them:
 // Install the swiftML package from GitHub.
 %install '.package(url: "https://github.com/param087/swiftML", from: "0.0.4")' swiftML
 
+// Install the swiftML package from GitHub master branch.
+%install '.package(url: "https://github.com/param087/swiftML", .branch("master"))' swiftML
+
+
 // Install the swiftML package that's in the local directory.
 %install '.package(path: "$cwd/swiftML")' swiftML
 ```
 
+## Contributing
+
+We welcome contribution from everyone. Read the [contribution guide](https://github.com/param087/blob/master/CONTRIBUTION.md) for information on of how to get started.
+
+## Community
+
+swiftML discussions happen on the [Slack](https://join.slack.com/t/swiftml/shared_invite/enQtODgwMjEzOTIxOTkwLWMzYzlmZTQwNjJkNzBiNzNhZGZmN2FhZjBlNDgxNjVjMDkxNDRlM2UxYmMzMmE4ZTMzZmE0ODIxZGQ2NzdiYWI).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

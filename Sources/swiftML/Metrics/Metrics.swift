@@ -1,0 +1,1 @@
+// Different types of Metric methods goes here.
